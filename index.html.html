@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <title>سعر الذهب بالمغرب</title>
 
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 body {
   font-family: Arial;
@@ -20,34 +23,33 @@ body {
   margin: 15px 0;
 }
 
-input {
+input, button {
   padding: 10px;
   width: 80%;
   border-radius: 10px;
   border: none;
   font-size: 16px;
+  margin: 5px;
 }
 
 button {
-  padding: 10px 20px;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: none;
-  font-size: 16px;
-  background: gold;
   cursor: pointer;
 }
 
-.result {
-  margin-top: 15px;
-  font-size: 18px;
-}
+.page { display: none; }
+.active { display: block; }
 </style>
+
 </head>
 
 <body>
 
-<h1>💰 سعر الذهب اليوم</h1>
+<!-- الصفحة الرئيسية -->
+<div id="homePage" class="page active">
+
+<h1>💰 سعر الذهب</h1>
+
+<button onclick="showPage('infoPage')">📘 شرح القيراط</button>
 
 <div class="card">
   <h3 id="ounce">جاري التحميل...</h3>
@@ -55,38 +57,84 @@ button {
 </div>
 
 <div class="card">
-  <h2>💎 الأسعار</h2>
   <p>🔸 24 قيراط : <span id="g24">-</span> درهم</p>
   <p>🔸 21 قيراط : <span id="g21">-</span> درهم</p>
   <p>🔸 18 قيراط : <span id="g18">-</span> درهم</p>
 </div>
 
 <div class="card">
-  <h2>🧮 احسب السعر</h2>
-  <input id="grams" type="number" placeholder="أدخل عدد الغرامات" />
-  <button onclick="calculate()">احسب</button>
-  <div class="result" id="result"></div>
+  <input id="grams" type="number" placeholder="عدد الغرامات" oninput="calculate()" />
+  <input id="making" type="number" placeholder="المصنعية لكل غرام" oninput="calculate()" />
+  <div id="result"></div>
+</div>
+
+<div class="card">
+  <h2>🎬 اربح نقاط</h2>
+  <button onclick="watchAd()">شاهد إعلان واربح</button>
+  <p id="points">النقاط: 0</p>
+</div>
+
+<div class="card">
+  <h2>📊 تغير السعر</h2>
+  <canvas id="goldChart"></canvas>
+</div>
+
+</div>
+
+<!-- صفحة الشرح -->
+<div id="infoPage" class="page">
+
+<h1>📘 شرح القيراط</h1>
+
+<button onclick="showPage('homePage')">⬅️ رجوع</button>
+
+<div class="card">
+  <h3>💎 24 قيراط</h3>
+  <p>ذهب نقي 100%، أعلى جودة وأغلى سعر.</p>
+</div>
+
+<div class="card">
+  <h3>💎 21 قيراط</h3>
+  <p>ذهب بنسبة 87.5%، الأكثر استعمالاً في الدول العربية.</p>
+</div>
+
+<div class="card">
+  <h3>💎 18 قيراط</h3>
+  <p>ذهب بنسبة 75%، صلب ومناسب للمجوهرات.</p>
+</div>
+
+<div class="card">
+  <h2>🎬 إعلان</h2>
+  <button onclick="watchAd()">شاهد إعلان</button>
+</div>
+
 </div>
 
 <script>
+let tg = window.Telegram.WebApp;
+tg.expand();
+
 let gramMAD = 0;
+let points = 0;
+let lastClick = 0;
 
-// نظام الإعلانات
-let calcClicks = 0;
-let lastAdTime = 0;
+// 🔄 التنقل بين الصفحات
+function showPage(pageId) {
+  document.getElementById("homePage").classList.remove("active");
+  document.getElementById("infoPage").classList.remove("active");
+  document.getElementById(pageId).classList.add("active");
+}
 
-// جلب السعر
+// 💰 جلب سعر الذهب
 async function getGoldPrice() {
   try {
     let goldRes = await fetch("https://api.gold-api.com/price/XAU");
     let goldData = await goldRes.json();
-    let ounceUSD = goldData.price;
 
     let usdRes = await fetch("https://open.er-api.com/v6/latest/USD");
     let usdData = await usdRes.json();
-    let usdToMAD = usdData.rates.MAD;
 
-    let ounceMAD = ounceUSD * usdToMAD;
+    let ounceMAD = goldData.price * usdData.rates.MAD;
     gramMAD = ounceMAD / 31.1;
 
     document.getElementById("ounce").innerText =
@@ -95,75 +143,67 @@ async function getGoldPrice() {
     document.getElementById("gram").innerText =
       "سعر الغرام: " + gramMAD.toFixed(2) + " درهم";
 
-    document.getElementById("g24").innerText =
-      gramMAD.toFixed(2);
+    document.getElementById("g24").innerText = gramMAD.toFixed(2);
+    document.getElementById("g21").innerText = (gramMAD * 0.875).toFixed(2);
+    document.getElementById("g18").innerText = (gramMAD * 0.75).toFixed(2);
 
-    document.getElementById("g21").innerText =
-      (gramMAD * 0.875).toFixed(2);
-
-    document.getElementById("g18").innerText =
-      (gramMAD * 0.75).toFixed(2);
-
-  } catch (error) {
-    document.getElementById("ounce").innerText =
-      "❌ خطأ في تحميل البيانات";
+  } catch (e) {
+    document.getElementById("ounce").innerText = "❌ خطأ في تحميل البيانات";
   }
 }
 
-// الحساب
+// 🧮 الحساب مع المصنعية
 function calculate() {
-  let grams = document.getElementById("grams").value;
+  let g = document.getElementById("grams").value;
+  let m = document.getElementById("making").value || 0;
 
-  if (!grams || grams <= 0) {
-    document.getElementById("result").innerText = "⚠️ أدخل قيمة صحيحة";
-    return;
-  }
+  if (!g || gramMAD === 0) return;
 
-  if (gramMAD === 0) {
-    document.getElementById("result").innerText = "⏳ انتظر تحميل السعر...";
-    return;
-  }
+  let r =
+    "🔸 24: " + ((g*gramMAD)+(g*m)).toFixed(2) + " درهم<br>" +
+    "🔸 21: " + ((g*gramMAD*0.875)+(g*m)).toFixed(2) + " درهم<br>" +
+    "🔸 18: " + ((g*gramMAD*0.75)+(g*m)).toFixed(2) + " درهم";
 
-  let price24 = grams * gramMAD;
-  let price21 = grams * gramMAD * 0.875;
-  let price18 = grams * gramMAD * 0.75;
-
-  document.getElementById("result").innerHTML =
-    "🔸 24 قيراط : " + price24.toFixed(2) + " درهم <br>" +
-    "🔸 21 قيراط : " + price21.toFixed(2) + " درهم <br>" +
-    "🔸 18 قيراط : " + price18.toFixed(2) + " درهم";
-
-  // عداد الضغطات
-  calcClicks++;
-
-  // إعلان بعد كل مرتين
-  if (calcClicks >= 2) {
-    showSmartAd();
-    calcClicks = 0;
-  }
+  document.getElementById("result").innerHTML = r;
 }
 
-// إعلان ذكي
-function showSmartAd() {
+// 🎬 نظام الإعلان + نقاط
+function watchAd() {
   let now = Date.now();
 
-  // منع التكرار أقل من 30 ثانية
-  if (now - lastAdTime < 30000) {
+  if (now - lastClick < 15000) {
+    alert("⏳ انتظر قليلاً...");
     return;
   }
 
-  lastAdTime = now;
-
+  lastClick = now;
   window.open("https://www.profitablecpmratenetwork.com/q9dp48u2t?key=2c47af4ede0f1094983fdad781055d6f", "_blank");
+
+  setTimeout(() => {
+    points += 10;
+    document.getElementById("points").innerText = "النقاط: " + points;
+  }, 5000);
 }
 
-// إعلان تلقائي بعد 20 ثانية
-setTimeout(() => {
-  showSmartAd();
-}, 20000);
+// 📊 المبيان
+function loadChart() {
+  new Chart(document.getElementById("goldChart"), {
+    type: 'line',
+    data: {
+      labels: ["الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت","الأحد"],
+      datasets: [{
+        label: "سعر الذهب",
+        data: [600,605,598,610,620,615,625],
+        borderWidth: 2,
+        tension: 0.3
+      }]
+    }
+  });
+}
 
 // تشغيل
 getGoldPrice();
+loadChart();
 </script>
 
 </body>
