@@ -4,12 +4,6 @@
 <meta charset="UTF-8">
 <title>سعر الذهب بالمغرب</title>
 
-<!-- سكريبت الإعلان -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4483939605247996"
-     crossorigin="anonymous"></script>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
 <style>
 body {
   font-family: Arial;
@@ -34,27 +28,26 @@ input {
   font-size: 16px;
 }
 
+button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  background: gold;
+  cursor: pointer;
+}
+
 .result {
   margin-top: 15px;
   font-size: 18px;
 }
 </style>
-
 </head>
 
 <body>
 
 <h1>💰 سعر الذهب اليوم</h1>
-
-<!-- إعلان -->
-<div style="margin:15px 0;">
-  <ins class="adsbygoogle"
-       style="display:block"
-       data-ad-format="fluid"
-       data-ad-layout-key="-5x+cx+4u-6g+56"
-       data-ad-client="ca-pub-4483939605247996"
-       data-ad-slot="8536035567"></ins>
-</div>
 
 <div class="card">
   <h3 id="ounce">جاري التحميل...</h3>
@@ -63,24 +56,24 @@ input {
 
 <div class="card">
   <h2>💎 الأسعار</h2>
-  
   <p>🔸 24 قيراط : <span id="g24">-</span> درهم</p>
+  <p>🔸 21 قيراط : <span id="g21">-</span> درهم</p>
   <p>🔸 18 قيراط : <span id="g18">-</span> درهم</p>
 </div>
 
 <div class="card">
   <h2>🧮 احسب السعر</h2>
-
-  <input id="grams" type="number" placeholder="أدخل عدد الغرامات" oninput="calculate()" />
-
+  <input id="grams" type="number" placeholder="أدخل عدد الغرامات" />
+  <button onclick="calculate()">احسب</button>
   <div class="result" id="result"></div>
 </div>
 
 <script>
-let tg = window.Telegram.WebApp;
-tg.expand();
-
 let gramMAD = 0;
+
+// نظام الإعلانات
+let calcClicks = 0;
+let lastAdTime = 0;
 
 // جلب السعر
 async function getGoldPrice() {
@@ -105,6 +98,9 @@ async function getGoldPrice() {
     document.getElementById("g24").innerText =
       gramMAD.toFixed(2);
 
+    document.getElementById("g21").innerText =
+      (gramMAD * 0.875).toFixed(2);
+
     document.getElementById("g18").innerText =
       (gramMAD * 0.75).toFixed(2);
 
@@ -119,7 +115,7 @@ function calculate() {
   let grams = document.getElementById("grams").value;
 
   if (!grams || grams <= 0) {
-    document.getElementById("result").innerText = "";
+    document.getElementById("result").innerText = "⚠️ أدخل قيمة صحيحة";
     return;
   }
 
@@ -129,18 +125,45 @@ function calculate() {
   }
 
   let price24 = grams * gramMAD;
+  let price21 = grams * gramMAD * 0.875;
   let price18 = grams * gramMAD * 0.75;
 
   document.getElementById("result").innerHTML =
     "🔸 24 قيراط : " + price24.toFixed(2) + " درهم <br>" +
+    "🔸 21 قيراط : " + price21.toFixed(2) + " درهم <br>" +
     "🔸 18 قيراط : " + price18.toFixed(2) + " درهم";
+
+  // عداد الضغطات
+  calcClicks++;
+
+  // إعلان بعد كل مرتين
+  if (calcClicks >= 2) {
+    showSmartAd();
+    calcClicks = 0;
+  }
 }
 
-// تشغيل التطبيق
-getGoldPrice();
+// إعلان ذكي
+function showSmartAd() {
+  let now = Date.now();
 
-// تشغيل الإعلان
-(adsbygoogle = window.adsbygoogle || []).push({});
+  // منع التكرار أقل من 30 ثانية
+  if (now - lastAdTime < 30000) {
+    return;
+  }
+
+  lastAdTime = now;
+
+  window.open("https://www.profitablecpmratenetwork.com/q9dp48u2t?key=2c47af4ede0f1094983fdad781055d6f", "_blank");
+}
+
+// إعلان تلقائي بعد 20 ثانية
+setTimeout(() => {
+  showSmartAd();
+}, 20000);
+
+// تشغيل
+getGoldPrice();
 </script>
 
 </body>
