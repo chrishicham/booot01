@@ -1,210 +1,141 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<title>سعر الذهب بالمغرب</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gold Profit App</title>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<style>
-body {
-  font-family: Arial;
-  text-align: center;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  color: white;
-  padding: 20px;
-}
+    <style>
+      body {
+        font-family: Arial;
+        background: #0f2027;
+        color: white;
+        text-align: center;
+        padding: 20px;
+      }
 
-.card {
-  background: rgba(255,255,255,0.1);
-  padding: 20px;
-  border-radius: 15px;
-  margin: 15px 0;
-}
+      .card {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 15px;
+        margin: 10px 0;
+      }
 
-input, button {
-  padding: 10px;
-  width: 80%;
-  border-radius: 10px;
-  border: none;
-  font-size: 16px;
-  margin: 5px;
-}
+      button,
+      input {
+        padding: 10px;
+        width: 80%;
+        margin: 5px;
+        border-radius: 10px;
+        border: none;
+      }
+    </style>
+  </head>
 
-button {
-  cursor: pointer;
-}
+  <body>
+    <h1>💰 Gold Profit</h1>
 
-.page { display: none; }
-.active { display: block; }
-</style>
+    <div class="card">
+      <h3 id="userId">User: ...</h3>
+      <h3 id="points">Points: 0</h3>
+    </div>
 
-</head>
+    <div class="card">
+      <button onclick="watchAd()">🎬 شاهد إعلان واربح</button>
+    </div>
 
-<body>
+    <div class="card">
+      <h3>🔗 رابط الإحالة</h3>
+      <input id="refLink" readonly />
+      <button onclick="copyRef()">نسخ الرابط</button>
+    </div>
 
-<!-- الصفحة الرئيسية -->
-<div id="homePage" class="page active">
+    <div class="card">
+      <h3>👥 الإحالات</h3>
+      <p id="refs">0 مستخدم</p>
+    </div>
 
-<h1>💰 سعر الذهب</h1>
+    <script>
+      let tg = window.Telegram.WebApp;
+      tg.expand();
 
-<button onclick="showPage('infoPage')">📘 شرح القيراط</button>
+      // 👤 جلب ID المستخدم
+      let user = tg.initDataUnsafe?.user || {};
+      let userId = user.id || "guest";
 
-<div class="card">
-  <h3 id="ounce">جاري التحميل...</h3>
-  <h3 id="gram">-</h3>
-</div>
+      document.getElementById("userId").innerText = "User: " + userId;
 
-<div class="card">
-  <p>🔸 24 قيراط : <span id="g24">-</span> درهم</p>
-  <p>🔸 21 قيراط : <span id="g21">-</span> درهم</p>
-  <p>🔸 18 قيراط : <span id="g18">-</span> درهم</p>
-</div>
+      // 💾 تخزين محلي (محاكاة قاعدة بيانات)
+      let points = parseInt(localStorage.getItem("points_" + userId)) || 0;
+      let refs = parseInt(localStorage.getItem("refs_" + userId)) || 0;
 
-<div class="card">
-  <input id="grams" type="number" placeholder="عدد الغرامات" oninput="calculate()" />
-  <input id="making" type="number" placeholder="المصنعية لكل غرام" oninput="calculate()" />
-  <div id="result"></div>
-</div>
+      document.getElementById("points").innerText = "Points: " + points;
+      document.getElementById("refs").innerText = refs + " مستخدم";
 
-<div class="card">
-  <h2>🎬 اربح نقاط</h2>
-  <button onclick="watchAd()">شاهد إعلان واربح</button>
-  <p id="points">النقاط: 0</p>
-</div>
+      // 🔗 رابط الإحالة
+      let refLink = "https://t.me/YOUR_BOT?start=" + userId;
+      document.getElementById("refLink").value = refLink;
 
-<div class="card">
-  <h2>📊 تغير السعر</h2>
-  <canvas id="goldChart"></canvas>
-</div>
+      // 📋 نسخ الرابط
+      function copyRef() {
+        navigator.clipboard.writeText(refLink);
+        alert("تم النسخ");
+      }
 
-</div>
+      // 🎬 إعلان + نقاط
+      let lastAd = 0;
 
-<!-- صفحة الشرح -->
-<div id="infoPage" class="page">
+      function watchAd() {
+        let now = Date.now();
 
-<h1>📘 شرح القيراط</h1>
+        if (now - lastAd < 15000) {
+          alert("انتظر قليلاً");
+          return;
+        }
 
-<button onclick="showPage('homePage')">⬅️ رجوع</button>
+        lastAd = now;
 
-<div class="card">
-  <h3>💎 24 قيراط</h3>
-  <p>ذهب نقي 100%، أعلى جودة وأغلى سعر.</p>
-</div>
+        window.open(
+          "https://www.profitablecpmratenetwork.com/q9dp48u2t?key=2c47af4ede0f1094983fdad781055d6f",
+          "_blank"
+        );
 
-<div class="card">
-  <h3>💎 21 قيراط</h3>
-  <p>ذهب بنسبة 87.5%، الأكثر استعمالاً في الدول العربية.</p>
-</div>
+        setTimeout(() => {
+          points += 20;
+          localStorage.setItem("points_" + userId, points);
+          document.getElementById("points").innerText = "Points: " + points;
+        }, 5000);
+      }
 
-<div class="card">
-  <h3>💎 18 قيراط</h3>
-  <p>ذهب بنسبة 75%، صلب ومناسب للمجوهرات.</p>
-</div>
+      // 🎯 نظام الإحالة
+      function handleReferral() {
+        let urlParams = new URLSearchParams(window.location.search);
+        let ref = urlParams.get("start");
 
-<div class="card">
-  <h2>🎬 إعلان</h2>
-  <button onclick="watchAd()">شاهد إعلان</button>
-</div>
+        if (ref && ref != userId) {
+          let already = localStorage.getItem("used_ref");
 
-</div>
+          if (!already) {
+            // مكافأة صاحب الرابط
+            let refPoints =
+              parseInt(localStorage.getItem("points_" + ref)) || 0;
+            refPoints += 50;
 
-<script>
-let tg = window.Telegram.WebApp;
-tg.expand();
+            localStorage.setItem("points_" + ref, refPoints);
 
-let gramMAD = 0;
-let points = 0;
-let lastClick = 0;
+            // زيادة عدد الإحالات
+            let refCount = parseInt(localStorage.getItem("refs_" + ref)) || 0;
+            refCount++;
 
-// 🔄 التنقل بين الصفحات
-function showPage(pageId) {
-  document.getElementById("homePage").classList.remove("active");
-  document.getElementById("infoPage").classList.remove("active");
-  document.getElementById(pageId).classList.add("active");
-}
+            localStorage.setItem("refs_" + ref, refCount);
 
-// 💰 جلب سعر الذهب
-async function getGoldPrice() {
-  try {
-    let goldRes = await fetch("https://api.gold-api.com/price/XAU");
-    let goldData = await goldRes.json();
+            localStorage.setItem("used_ref", "yes");
+          }
+        }
+      }
 
-    let usdRes = await fetch("https://open.er-api.com/v6/latest/USD");
-    let usdData = await usdRes.json();
-
-    let ounceMAD = goldData.price * usdData.rates.MAD;
-    gramMAD = ounceMAD / 31.1;
-
-    document.getElementById("ounce").innerText =
-      "سعر الأونصة: " + ounceMAD.toFixed(2) + " درهم";
-
-    document.getElementById("gram").innerText =
-      "سعر الغرام: " + gramMAD.toFixed(2) + " درهم";
-
-    document.getElementById("g24").innerText = gramMAD.toFixed(2);
-    document.getElementById("g21").innerText = (gramMAD * 0.875).toFixed(2);
-    document.getElementById("g18").innerText = (gramMAD * 0.75).toFixed(2);
-
-  } catch (e) {
-    document.getElementById("ounce").innerText = "❌ خطأ في تحميل البيانات";
-  }
-}
-
-// 🧮 الحساب مع المصنعية
-function calculate() {
-  let g = document.getElementById("grams").value;
-  let m = document.getElementById("making").value || 0;
-
-  if (!g || gramMAD === 0) return;
-
-  let r =
-    "🔸 24: " + ((g*gramMAD)+(g*m)).toFixed(2) + " درهم<br>" +
-    "🔸 21: " + ((g*gramMAD*0.875)+(g*m)).toFixed(2) + " درهم<br>" +
-    "🔸 18: " + ((g*gramMAD*0.75)+(g*m)).toFixed(2) + " درهم";
-
-  document.getElementById("result").innerHTML = r;
-}
-
-// 🎬 نظام الإعلان + نقاط
-function watchAd() {
-  let now = Date.now();
-
-  if (now - lastClick < 15000) {
-    alert("⏳ انتظر قليلاً...");
-    return;
-  }
-
-  lastClick = now;
-  window.open("https://www.profitablecpmratenetwork.com/q9dp48u2t?key=2c47af4ede0f1094983fdad781055d6f", "_blank");
-
-  setTimeout(() => {
-    points += 10;
-    document.getElementById("points").innerText = "النقاط: " + points;
-  }, 5000);
-}
-
-// 📊 المبيان
-function loadChart() {
-  new Chart(document.getElementById("goldChart"), {
-    type: 'line',
-    data: {
-      labels: ["الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت","الأحد"],
-      datasets: [{
-        label: "سعر الذهب",
-        data: [600,605,598,610,620,615,625],
-        borderWidth: 2,
-        tension: 0.3
-      }]
-    }
-  });
-}
-
-// تشغيل
-getGoldPrice();
-loadChart();
-</script>
-
-</body>
+      handleReferral();
+    </script>
+  </body>
 </html>
