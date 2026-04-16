@@ -3,395 +3,731 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>حاسبة الذهب</title>
-
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <title>Gold AI Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    :root {
-      --bg: #061f1a;
-      --card: rgba(255, 255, 255, 0.08);
-      --text: #fff7dd;
-      --muted: #a8b8b0;
-      --gold: #d4af37;
-      --border: rgba(212, 175, 55, 0.35);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #123d32, var(--bg));
-      color: var(--text);
-      padding: 18px;
-      padding-bottom: 90px;
+      font-family: 'Cairo', Arial, sans-serif;
+      background: #0b1120;
+      color: #f0f4ff;
+      min-height: 100vh;
+      padding-bottom: 80px;
     }
 
-    h1, h2, h3, p {
-      margin-top: 0;
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 64px;
+      background: rgba(15, 22, 40, 0.92);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255, 215, 0, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 999;
     }
 
-    .title {
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      color: #6b7a99;
+      transition: color 0.2s;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: 12px;
+    }
+
+    .nav-item.active { color: #ffd700; }
+    .nav-item svg { width: 22px; height: 22px; }
+
+    /* ===== HEADER ===== */
+    .app-header {
       text-align: center;
-      color: var(--gold);
+      padding: 32px 20px 16px;
+    }
+
+    .app-header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #ffd700;
+      letter-spacing: 1px;
+    }
+
+    .app-header p {
+      color: #6b7a99;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    /* ===== PAGES ===== */
+    .page { display: none; padding: 0 16px; }
+    .page.active { display: block; }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 16px;
+    }
+
+    /* ===== PRICE GRID ===== */
+    .price-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .price-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.12);
+      border-radius: 16px;
+      padding: 20px 12px;
+      text-align: center;
+    }
+
+    .price-box.gold-box { border-color: rgba(255, 215, 0, 0.35); }
+
+    .price-box .label {
+      font-size: 12px;
+      color: #6b7a99;
+      margin-bottom: 6px;
+    }
+
+    .price-box .value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #f0f4ff;
+    }
+
+    .price-box.gold-box .value { color: #ffd700; }
+
+    /* ===== KARAT PRICES ===== */
+    .karat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 8px;
+    }
+
+    .karat-label { color: #6b7a99; font-size: 14px; font-weight: 600; }
+    .karat-value { font-size: 18px; font-weight: 800; color: #f0f4ff; }
+    .karat-unit { font-size: 12px; color: #6b7a99; font-weight: 400; }
+
+    /* ===== INPUTS ===== */
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
       margin-bottom: 20px;
     }
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 18px;
-      margin-bottom: 16px;
-      backdrop-filter: blur(12px);
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      color: #6b7a99;
+      margin-bottom: 6px;
+      font-weight: 600;
     }
 
-    .price {
-      font-size: 28px;
-      font-weight: bold;
-      color: var(--gold);
-      text-align: center;
-    }
-
-    .muted {
-      color: var(--muted);
-      text-align: center;
-    }
-
-    .row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
+    .input-group input {
+      width: 100%;
       padding: 12px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.05);
-      margin: 8px 0;
-    }
-
-    input {
-      width: 100%;
-      padding: 13px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.25);
-      color: white;
-      font-size: 16px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #f0f4ff;
+      font-size: 18px;
+      font-weight: 700;
+      text-align: center;
+      font-family: 'Cairo', Arial, sans-serif;
       outline: none;
-      margin-bottom: 10px;
+      transition: border-color 0.2s;
     }
 
-    button {
-      width: 100%;
-      padding: 14px;
+    .input-group input:focus { border-color: rgba(255, 215, 0, 0.5); }
+
+    /* ===== DIVIDER ===== */
+    .divider {
       border: none;
-      border-radius: 16px;
-      background: var(--gold);
-      color: #111;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      margin: 16px 0;
+    }
+
+    /* ===== LOADING ===== */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6b7a99;
+      font-size: 14px;
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(255, 215, 0, 0.2);
+      border-top-color: #ffd700;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== CHART ===== */
+    .chart-wrapper {
+      position: relative;
+      height: 220px;
       margin-top: 8px;
     }
 
-    .page {
-      display: none;
+    /* ===== PREDICT ===== */
+    .predict-hero {
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      background: rgba(255, 215, 0, 0.04);
     }
 
-    .page.active {
-      display: block;
+    .predict-price {
+      font-size: 42px;
+      font-weight: 800;
+      color: #f0f4ff;
+      line-height: 1;
     }
 
-    .nav {
-      position: fixed;
-      bottom: 0;
-      right: 0;
-      left: 0;
+    .predict-unit { font-size: 16px; color: #6b7a99; margin-right: 8px; }
+
+    .trend-up { color: #22c55e; display: flex; align-items: center; gap: 6px; font-weight: 700; margin-top: 12px; }
+    .trend-down { color: #ef4444; display: flex; align-items: center; gap: 6px; font-weight: 700; margin-top: 12px; }
+
+    .predict-days {
       display: flex;
-      background: #041713;
-      border-top: 1px solid var(--border);
-      z-index: 10;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    .nav button {
-      background: transparent;
-      color: var(--muted);
-      border-radius: 0;
-      margin: 0;
-      padding: 14px 6px;
+    .day-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 14px;
     }
 
-    .nav button.active {
-      color: var(--gold);
+    .day-label { color: #6b7a99; }
+    .day-value { font-weight: 700; }
+    .day-up { color: #22c55e; }
+    .day-down { color: #ef4444; }
+
+    .disclaimer {
+      font-size: 11px;
+      color: #4b5563;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      line-height: 1.6;
     }
 
-    canvas {
-      max-height: 260px;
+    /* ===== INFO PAGE ===== */
+    .info-intro {
+      color: #9ca3af;
+      font-size: 14px;
+      line-height: 1.8;
+      margin-bottom: 20px;
     }
 
-    .error {
-      color: #ffb4b4;
-      text-align: center;
+    .info-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 4px;
+      height: 100%;
+      background: #ffd700;
+      border-radius: 0 16px 16px 0;
+    }
+
+    .info-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .info-card h3 { font-size: 17px; font-weight: 700; color: #ffd700; }
+    .info-badge {
+      font-size: 11px;
+      background: rgba(255, 215, 0, 0.1);
+      color: #ffd700;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .info-card p { font-size: 13px; color: #9ca3af; line-height: 1.8; }
+
+    /* ===== REFRESH BADGE ===== */
+    .refresh-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: #6b7a99;
+      margin-bottom: 12px;
+    }
+
+    .refresh-dot {
+      width: 7px; height: 7px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
     }
   </style>
 </head>
 
 <body>
-  <h1 class="title">حاسبة الذهب المغربية</h1>
 
-  <div id="home" class="page active">
-    <div class="card">
-      <p class="muted">سعر الأونصة XAU</p>
-      <div id="ouncePrice" class="price">جاري التحميل...</div>
+  <!-- HEADER -->
+  <div class="app-header">
+    <h1>Gold AI Calculator</h1>
+    <p>حاسبة أسعار الذهب المباشرة</p>
+  </div>
+
+  <!-- HOME PAGE -->
+  <div id="homePage" class="page active">
+    <div class="refresh-badge">
+      <span class="refresh-dot"></span>
+      يتجدد السعر كل دقيقة
     </div>
 
-    <div class="card">
-      <p class="muted">سعر الغرام بالدرهم</p>
-      <div id="gramPrice" class="price">---</div>
-    </div>
-
-    <div class="card">
-      <h2>أسعار العيارات</h2>
-      <div class="row">
-        <strong>24 قيراط</strong>
-        <span id="g24">---</span>
+    <!-- Price boxes -->
+    <div class="price-grid">
+      <div class="price-box gold-box">
+        <div class="label">سعر الجرام (عيار 24)</div>
+        <div class="value" id="gramPrice">...</div>
+        <div class="label" style="margin-top:4px">د.م</div>
       </div>
-      <div class="row">
-        <strong>21 قيراط</strong>
-        <span id="g21">---</span>
-      </div>
-      <div class="row">
-        <strong>18 قيراط</strong>
-        <span id="g18">---</span>
+      <div class="price-box">
+        <div class="label">سعر الأونصة</div>
+        <div class="value" id="ouncePrice">...</div>
+        <div class="label" style="margin-top:4px">USD</div>
       </div>
     </div>
 
+    <!-- Karat prices -->
     <div class="card">
-      <h2>حاسبة القطع</h2>
-      <input id="grams" type="number" placeholder="الوزن بالغرام" />
-      <input id="making" type="number" placeholder="المصنعية لكل غرام" />
-      <button onclick="calculate()">احسب السعر</button>
-      <div id="result"></div>
+      <div class="card-title">أسعار العيارات (د.م / جرام)</div>
+      <div class="karat-row">
+        <span class="karat-label">عيار 24</span>
+        <span class="karat-value" id="k24">-<span class="karat-unit"> د.م</span></span>
+      </div>
+      <div class="karat-row">
+        <span class="karat-label">عيار 21</span>
+        <span class="karat-value" id="k21">-<span class="karat-unit"> د.م</span></span>
+      </div>
+      <div class="karat-row">
+        <span class="karat-label">عيار 18</span>
+        <span class="karat-value" id="k18">-<span class="karat-unit"> د.م</span></span>
+      </div>
     </div>
 
+    <!-- Calculator -->
     <div class="card">
-      <h2>آخر 7 أيام</h2>
-      <canvas id="goldChart"></canvas>
+      <div class="card-title">حاسبة التكلفة</div>
+      <div class="input-grid">
+        <div class="input-group">
+          <label>الوزن (جرام)</label>
+          <input type="number" id="weight" value="10" oninput="calculateCost()" />
+        </div>
+        <div class="input-group">
+          <label>المصنعية (د.م/جرام)</label>
+          <input type="number" id="fee" value="50" oninput="calculateCost()" />
+        </div>
+      </div>
+      <hr class="divider" />
+      <div id="calcResult">
+        <div class="karat-row">
+          <span class="karat-label">عيار 24</span>
+          <span class="karat-value" id="calc24">0.00<span class="karat-unit"> د.م</span></span>
+        </div>
+        <div class="karat-row">
+          <span class="karat-label">عيار 21</span>
+          <span class="karat-value" id="calc21">0.00<span class="karat-unit"> د.م</span></span>
+        </div>
+        <div class="karat-row">
+          <span class="karat-label">عيار 18</span>
+          <span class="karat-value" id="calc18">0.00<span class="karat-unit"> د.م</span></span>
+        </div>
+      </div>
     </div>
 
-    <div id="error" class="error"></div>
+    <!-- 7-day chart -->
+    <div class="card">
+      <div class="card-title">تاريخ الأسعار (7 أيام)</div>
+      <div class="chart-wrapper">
+        <canvas id="goldChart"></canvas>
+      </div>
+    </div>
   </div>
 
-  <div id="info" class="page">
-    <div class="card">
-      <h2>شرح القيراط</h2>
-      <p>
-        قيراط الذهب هو وحدة قياس عالمية لنقاء الذهب، حيث يمثل الذهب عيار 24
-        ذهباً خالصاً تقريباً بنسبة 99.9%.
-      </p>
+  <!-- PREDICT PAGE -->
+  <div id="predictPage" class="page">
+    <div class="predict-hero" id="predictHero">
+      <div style="font-size:13px;color:#6b7a99;margin-bottom:10px;">توقع سعر الغد</div>
+      <div style="display:flex;align-items:flex-end;gap:8px;">
+        <div class="predict-price" id="predictPrice">-</div>
+        <div class="predict-unit">د.م / جرام</div>
+      </div>
+      <div id="predictTrend"></div>
+      <div class="disclaimer">
+        تنويه: هذه التوقعات محاكاة عشوائية بسيطة ولا تُعدّ نصيحة مالية أو استثمارية.
+      </div>
     </div>
 
     <div class="card">
-      <h3>24 قيراط</h3>
-      <p>ذهب نقي تقريباً، يستخدم غالباً في السبائك والاستثمار.</p>
-    </div>
-
-    <div class="card">
-      <h3>21 قيراط</h3>
-      <p>يحتوي على 87.5% ذهب تقريباً، وهو شائع جداً في المجوهرات.</p>
-    </div>
-
-    <div class="card">
-      <h3>18 قيراط</h3>
-      <p>يحتوي على 75% ذهب، ويتميز بصلابة أكبر للمشغولات الدقيقة.</p>
+      <div class="card-title">مسار الأيام الخمسة القادمة</div>
+      <div class="predict-days" id="predictDays"></div>
+      <div class="chart-wrapper" style="margin-top:16px;">
+        <canvas id="predictChart"></canvas>
+      </div>
     </div>
   </div>
 
-  <div id="predict" class="page">
-    <div class="card">
-      <h2>التنبؤ التقريبي</h2>
-      <p class="muted">هذا توقع تقريبي محلي وليس نصيحة استثمارية.</p>
-      <div id="prediction" class="price">---</div>
-      <p id="trend" class="muted"></p>
+  <!-- INFO PAGE -->
+  <div id="infoPage" class="page">
+    <p class="info-intro">
+      القيراط هو وحدة قياس نقاء الذهب. الذهب الخالص في الطبيعة لين جداً فيُخلط بمعادن أخرى لزيادة صلابته. العيار يحدد نسبة الذهب الخالص في القطعة من أصل 24 جزءاً.
+    </p>
+
+    <div class="info-card">
+      <div class="info-card-header">
+        <h3>عيار 24</h3>
+        <span class="info-badge">99.9% ذهب خالص</span>
+      </div>
+      <p>أنقى أنواع الذهب المتاحة. لين جداً ويستخدم بشكل رئيسي في السبائك والعملات الذهبية للاستثمار، وليس في المجوهرات اليومية.</p>
     </div>
 
-    <div class="card">
-      <h3>الأيام القادمة</h3>
-      <div id="future"></div>
+    <div class="info-card">
+      <div class="info-card-header">
+        <h3>عيار 21</h3>
+        <span class="info-badge">87.5% ذهب</span>
+      </div>
+      <p>يتكون من 21 جزء ذهب و3 أجزاء من معادن أخرى كالنحاس والزنك. الأكثر شيوعاً في مجوهرات الشرق الأوسط بلونه الأصفر الغني وصلابته المناسبة.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-header">
+        <h3>عيار 18</h3>
+        <span class="info-badge">75.0% ذهب</span>
+      </div>
+      <p>يتكون من 18 جزء ذهب و6 أجزاء معادن أخرى. يتميز بصلابة عالية، مما يجعله مثالياً للمجوهرات المرصعة بالألماس والأحجار الكريمة.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-header">
+        <h3>نظرة تاريخية</h3>
+        <span class="info-badge">معلومة</span>
+      </div>
+      <p>يعود أصل كلمة "قيراط" إلى بذور الخروب التي كانت تُستخدم قديماً لوزن المعادن الثمينة. القيراط هو مقياس نقاوة وليس وزناً — الوزن يُقاس بالجرام.</p>
     </div>
   </div>
 
-  <div class="nav">
-    <button id="navHome" class="active" onclick="showPage('home')">الرئيسية</button>
-    <button id="navInfo" onclick="showPage('info')">معلومات</button>
-    <button id="navPredict" onclick="showPage('predict')">التنبؤ</button>
-  </div>
+  <!-- BOTTOM NAV -->
+  <nav class="navbar">
+    <div class="nav-item active" id="nav-home" onclick="showPage('home')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+      </svg>
+      الرئيسية
+    </div>
+    <div class="nav-item" id="nav-predict" onclick="showPage('predict')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+      </svg>
+      التنبؤ
+    </div>
+    <div class="nav-item" id="nav-info" onclick="showPage('info')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      معلومات
+    </div>
+  </nav>
 
   <script>
-    const tg = window.Telegram?.WebApp;
-
-    if (tg) {
-      tg.ready();
-      tg.expand();
-      tg.setHeaderColor("#061f1a");
-      tg.setBackgroundColor("#061f1a");
-    }
-
     let gramMAD = 0;
-    let chart;
-    let dailyData = JSON.parse(localStorage.getItem("gold7days") || "[]");
+    let priceUSD = 0;
+    let goldChart = null;
+    let predictChart = null;
 
-    const ouncePrice = document.getElementById("ouncePrice");
-    const gramPrice = document.getElementById("gramPrice");
-    const g24 = document.getElementById("g24");
-    const g21 = document.getElementById("g21");
-    const g18 = document.getElementById("g18");
-    const errorBox = document.getElementById("error");
-
-    function formatMAD(value) {
-      return Number(value).toLocaleString("ar-MA", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      }) + " درهم";
-    }
-
+    // ===== NAVIGATION =====
     function showPage(page) {
-      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-      document.getElementById(page).classList.add("active");
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
-      document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
-      if (page === "home") navHome.classList.add("active");
-      if (page === "info") navInfo.classList.add("active");
-      if (page === "predict") {
-        navPredict.classList.add("active");
-        predict();
-      }
+      document.getElementById(page + 'Page').classList.add('active');
+      document.getElementById('nav-' + page).classList.add('active');
 
-      if (tg?.HapticFeedback) {
-        tg.HapticFeedback.selectionChanged();
-      }
+      if (page === 'predict') buildPrediction();
     }
 
-    async function getGold() {
+    // ===== FETCH GOLD PRICE =====
+    async function fetchGoldPrice() {
       try {
-        errorBox.textContent = "";
+        const [goldRes, fxRes] = await Promise.all([
+          fetch('https://api.gold-api.com/price/XAU'),
+          fetch('https://open.er-api.com/v6/latest/USD')
+        ]);
 
-        const goldRes = await fetch("https://api.gold-api.com/price/XAU");
         const gold = await goldRes.json();
+        const fx = await fxRes.json();
 
-        const currencyRes = await fetch("https://open.er-api.com/v6/latest/USD");
-        const currency = await currencyRes.json();
+        priceUSD = gold.price;
+        const rateMAD = fx.rates.MAD;
+        gramMAD = (priceUSD * rateMAD) / 31.1035;
 
-        const usdToMad = currency.rates.MAD;
-        gramMAD = (gold.price * usdToMad) / 31.1;
-
-        ouncePrice.textContent = formatMAD(gramMAD * 31.1);
-        gramPrice.textContent = formatMAD(gramMAD);
-
-        g24.textContent = formatMAD(gramMAD);
-        g21.textContent = formatMAD(gramMAD * 0.875);
-        g18.textContent = formatMAD(gramMAD * 0.75);
-
-        updateDaily(gramMAD);
-      } catch (err) {
-        errorBox.textContent = "تعذر جلب السعر الآن. حاول لاحقاً.";
+        updatePriceUI();
+        updateHistory();
+        calculateCost();
+      } catch (e) {
+        console.error('خطأ في جلب السعر', e);
       }
     }
 
-    function calculate() {
-      const grams = Number(document.getElementById("grams").value);
-      const making = Number(document.getElementById("making").value || 0);
-      const result = document.getElementById("result");
-
-      if (!grams || grams <= 0) {
-        result.innerHTML = '<p class="error">أدخل وزن صحيح</p>';
-        return;
-      }
-
-      const price24 = grams * gramMAD + grams * making;
-      const price21 = grams * gramMAD * 0.875 + grams * making;
-      const price18 = grams * gramMAD * 0.75 + grams * making;
-
-      result.innerHTML = `
-        <div class="row"><strong>24 قيراط</strong><span>${formatMAD(price24)}</span></div>
-        <div class="row"><strong>21 قيراط</strong><span>${formatMAD(price21)}</span></div>
-        <div class="row"><strong>18 قيراط</strong><span>${formatMAD(price18)}</span></div>
-      `;
-
-      if (tg?.HapticFeedback) {
-        tg.HapticFeedback.notificationOccurred("success");
-      }
+    // ===== UPDATE UI =====
+    function updatePriceUI() {
+      document.getElementById('gramPrice').textContent = gramMAD.toFixed(2);
+      document.getElementById('ouncePrice').textContent = '$' + priceUSD.toFixed(2);
+      document.getElementById('k24').innerHTML = gramMAD.toFixed(2) + '<span class="karat-unit"> د.م</span>';
+      document.getElementById('k21').innerHTML = (gramMAD * 0.875).toFixed(2) + '<span class="karat-unit"> د.م</span>';
+      document.getElementById('k18').innerHTML = (gramMAD * 0.75).toFixed(2) + '<span class="karat-unit"> د.م</span>';
     }
 
-    function updateDaily(price) {
-      const today = new Date().toISOString().split("T")[0];
+    // ===== CALCULATOR =====
+    function calculateCost() {
+      const w = parseFloat(document.getElementById('weight').value) || 0;
+      const f = parseFloat(document.getElementById('fee').value) || 0;
 
-      if (dailyData.length && dailyData[dailyData.length - 1].date === today) {
-        dailyData[dailyData.length - 1].price = price;
+      const calc = (karat) => ((w * gramMAD * karat) + (w * f)).toFixed(2);
+
+      document.getElementById('calc24').innerHTML = calc(1) + '<span class="karat-unit"> د.م</span>';
+      document.getElementById('calc21').innerHTML = calc(0.875) + '<span class="karat-unit"> د.م</span>';
+      document.getElementById('calc18').innerHTML = calc(0.75) + '<span class="karat-unit"> د.م</span>';
+    }
+
+    // ===== 7-DAY HISTORY =====
+    function updateHistory() {
+      const today = new Date().toISOString().split('T')[0];
+      let history = JSON.parse(localStorage.getItem('gold7days') || '[]');
+
+      const idx = history.findIndex(h => h.date === today);
+      if (idx >= 0) {
+        history[idx].price = gramMAD;
       } else {
-        dailyData.push({ date: today, price });
+        history.push({ date: today, price: gramMAD });
+        if (history.length > 7) history = history.slice(-7);
       }
+      localStorage.setItem('gold7days', JSON.stringify(history));
 
-      if (dailyData.length > 7) dailyData.shift();
-
-      localStorage.setItem("gold7days", JSON.stringify(dailyData));
-      drawChart();
+      drawChart(history);
     }
 
-    function initChart() {
-      const ctx = document.getElementById("goldChart");
+    function drawChart(history) {
+      const labels = history.map(h => {
+        const d = new Date(h.date);
+        return d.toLocaleDateString('ar-MA', { weekday: 'short', month: 'short', day: 'numeric' });
+      });
+      const prices = history.map(h => h.price.toFixed(2));
 
-      chart = new Chart(ctx, {
-        type: "line",
+      const ctx = document.getElementById('goldChart').getContext('2d');
+
+      if (goldChart) goldChart.destroy();
+
+      goldChart = new Chart(ctx, {
+        type: 'line',
         data: {
-          labels: [],
+          labels,
           datasets: [{
-            label: "سعر الغرام",
-            data: [],
-            borderColor: "#d4af37",
-            backgroundColor: "rgba(212,175,55,0.2)",
-            tension: 0.35,
-            fill: true
+            label: 'سعر الجرام (د.م)',
+            data: prices,
+            borderColor: '#ffd700',
+            backgroundColor: 'rgba(255,215,0,0.1)',
+            borderWidth: 3,
+            pointBackgroundColor: '#ffd700',
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            tension: 0.4,
+            fill: true,
           }]
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false,
           plugins: {
-            legend: {
-              labels: {
-                color: "#fff7dd"
-              }
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1a2440',
+              borderColor: '#ffd700',
+              borderWidth: 1,
+              titleColor: '#ffd700',
+              bodyColor: '#e2e8f0',
             }
           },
           scales: {
             x: {
-              ticks: { color: "#a8b8b0" },
-              grid: { color: "rgba(255,255,255,0.08)" }
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { color: '#6b7a99', font: { family: 'Cairo', size: 11 } }
             },
             y: {
-              ticks: { color: "#a8b8b0" },
-              grid: { color: "rgba(255,255,255,0.08)" }
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { color: '#6b7a99', font: { family: 'Cairo', size: 11 } }
             }
           }
         }
       });
     }
 
-    function drawChart() {
-      if (!chart) return;
-
-      chart.data.labels = dailyData.map(item => item.date);
-      chart.data.datasets[0].data = dailyData.map(item => item.price.toFixed(2));
-      chart.update();
-    }
-
-    function predict() {
+    // ===== PREDICTION =====
+    function buildPrediction() {
       if (!gramMAD) return;
 
-      let base = gramMAD;
-      const isUp = Math.random() > 0.5;
+      let price = gramMAD;
+      const days = [];
+      const today = new Date();
 
-      document.getElementById("trend").textContent = isUp ? "اتجاه متوقع: صعود" : "اتجاه متوقع: هبوط
+      for (let i = 1; i <= 5; i++) {
+        const date = new Date(today);
+        date.setDate(date.getDate() + i);
+        const change = (Math.random() * 2 - 0.8) / 100;
+        price = price * (1 + change);
+        days.push({
+          label: date.toLocaleDateString('ar-MA', { weekday: 'long' }),
+          price: price.toFixed(2),
+          change: (change * 100).toFixed(2),
+          up: change >= 0
+        });
+      }
+
+      const tomorrow = days[0];
+      document.getElementById('predictPrice').textContent = tomorrow.price;
+
+      const trendEl = document.getElementById('predictTrend');
+      if (tomorrow.up) {
+        trendEl.innerHTML = `<div class="trend-up">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+          ارتفاع متوقع بنسبة ${tomorrow.change}%
+        </div>`;
+      } else {
+        trendEl.innerHTML = `<div class="trend-down">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+          انخفاض متوقع بنسبة ${Math.abs(tomorrow.change)}%
+        </div>`;
+      }
+
+      const daysEl = document.getElementById('predictDays');
+      daysEl.innerHTML = days.map(d => `
+        <div class="day-row">
+          <span class="day-label">${d.label}</span>
+          <span class="day-value ${d.up ? 'day-up' : 'day-down'}">${d.price} د.م</span>
+        </div>
+      `).join('');
+
+      const ctx = document.getElementById('predictChart').getContext('2d');
+      if (predictChart) predictChart.destroy();
+
+      predictChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: days.map(d => d.label),
+          datasets: [{
+            label: 'السعر المتوقع',
+            data: days.map(d => d.price),
+            borderColor: '#ffd700',
+            backgroundColor: 'rgba(255,215,0,0.08)',
+            borderWidth: 2,
+            borderDash: [6, 4],
+            pointBackgroundColor: '#0b1120',
+            pointBorderColor: '#ffd700',
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            tension: 0.4,
+            fill: true,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1a2440',
+              borderColor: '#ffd700',
+              borderWidth: 1,
+              titleColor: '#ffd700',
+              bodyColor: '#e2e8f0',
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { color: '#6b7a99', font: { family: 'Cairo', size: 11 } }
+            },
+            y: {
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { color: '#6b7a99', font: { family: 'Cairo', size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
+    // ===== INIT =====
+    fetchGoldPrice();
+    setInterval(fetchGoldPrice, 60000);
+  </script>
+</body>
+</html>
