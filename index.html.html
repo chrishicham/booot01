@@ -1,307 +1,397 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Gold AI Calculator</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>حاسبة الذهب</title>
 
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
-      :root {
-        --bg: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        --text: white;
-        --card: rgba(255, 255, 255, 0.1);
-      }
+  <style>
+    :root {
+      --bg: #061f1a;
+      --card: rgba(255, 255, 255, 0.08);
+      --text: #fff7dd;
+      --muted: #a8b8b0;
+      --gold: #d4af37;
+      --border: rgba(212, 175, 55, 0.35);
+    }
 
-      .light-mode {
-        --bg: linear-gradient(135deg, #f5f5f5, #e0e0e0);
-        --text: #111;
-        --card: rgba(0, 0, 0, 0.05);
-      }
+    * {
+      box-sizing: border-box;
+    }
 
-      body {
-        margin: 0;
-        font-family: Arial;
-        background: var(--bg);
-        color: var(--text);
-        padding-top: 90px;
-        padding-bottom: 60px;
-        transition: 0.3s;
-      }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #123d32, var(--bg));
+      color: var(--text);
+      padding: 18px;
+      padding-bottom: 90px;
+    }
 
-      .header-ad {
-        position: fixed;
-        top: 0;
-        width: 100%;
-        height: 70px;
-        background: #000;
-        color: gold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        cursor: pointer;
-      }
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
 
-      .card {
-        background: var(--card);
-        margin: 15px;
-        padding: 20px;
-        border-radius: 20px;
-        backdrop-filter: blur(10px);
-      }
+    .title {
+      text-align: center;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
 
-      input,
-      button {
-        width: 80%;
-        padding: 10px;
-        margin: 5px;
-        border-radius: 10px;
-        border: none;
-      }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(12px);
+    }
 
-      button {
-        background: gold;
-      }
+    .price {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--gold);
+      text-align: center;
+    }
 
-      .page {
-        display: none;
-      }
-      .active {
-        display: block;
-      }
-    </style>
-  </head>
+    .muted {
+      color: var(--muted);
+      text-align: center;
+    }
 
-  <body>
-    <div class="header-ad" onclick="openAd()">🔥 أفضل فرص الذهب</div>
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      margin: 8px 0;
+    }
 
-    <div id="homePage" class="page active">
-      <h1>💰 حاسبة الذهب</h1>
+    input {
+      width: 100%;
+      padding: 13px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.25);
+      color: white;
+      font-size: 16px;
+      outline: none;
+      margin-bottom: 10px;
+    }
 
-      <button onclick="showPage('infoPage')">📘 معلومات القيراط</button>
-      <button onclick="showPage('predictPage')">📈 التنبؤ</button>
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 16px;
+      background: var(--gold);
+      color: #111;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+    }
 
-      <div class="card">
-        <h3 id="ounce">تحميل...</h3>
-        <h3 id="gram">-</h3>
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .nav {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      display: flex;
+      background: #041713;
+      border-top: 1px solid var(--border);
+      z-index: 10;
+    }
+
+    .nav button {
+      background: transparent;
+      color: var(--muted);
+      border-radius: 0;
+      margin: 0;
+      padding: 14px 6px;
+    }
+
+    .nav button.active {
+      color: var(--gold);
+    }
+
+    canvas {
+      max-height: 260px;
+    }
+
+    .error {
+      color: #ffb4b4;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 class="title">حاسبة الذهب المغربية</h1>
+
+  <div id="home" class="page active">
+    <div class="card">
+      <p class="muted">سعر الأونصة XAU</p>
+      <div id="ouncePrice" class="price">جاري التحميل...</div>
+    </div>
+
+    <div class="card">
+      <p class="muted">سعر الغرام بالدرهم</p>
+      <div id="gramPrice" class="price">---</div>
+    </div>
+
+    <div class="card">
+      <h2>أسعار العيارات</h2>
+      <div class="row">
+        <strong>24 قيراط</strong>
+        <span id="g24">---</span>
       </div>
-
-      <div class="card">
-        <p>24 قيراط: <span id="g24"></span></p>
-        <p>21 قيراط: <span id="g21"></span></p>
-        <p>18 قيراط: <span id="g18"></span></p>
+      <div class="row">
+        <strong>21 قيراط</strong>
+        <span id="g21">---</span>
       </div>
-
-      <div class="card">
-        <input id="grams" type="number" placeholder="غرام" />
-        <input id="making" type="number" placeholder="مصنعية" />
-        <button onclick="calculate()">احسب</button>
-        <div id="result"></div>
-      </div>
-
-      <div class="card">
-        <h2>📊 سعر الذهب (7 أيام)</h2>
-        <canvas id="goldChart"></canvas>
+      <div class="row">
+        <strong>18 قيراط</strong>
+        <span id="g18">---</span>
       </div>
     </div>
 
-    <!-- 📘 معلومات القيراط (كاملة بدون حذف) -->
-    <div id="infoPage" class="page">
-      <h1>📘 شرح القيراط</h1>
-      <button onclick="showPage('homePage')">⬅ رجوع</button>
-
-      <div class="card">
-        <h3>قيراط</h3>
-        <p>
-          قيراط الذهب هو وحدة قياس عالمية لنقاء الذهب، تقسم الذهب إلى 24 جزءاً؛
-          حيث يمثل الذهب عيار 24 ذهباً خالصاً بنسبة 99.9%، بينما تمثل العيارات
-          الأقل (مثل 21 أو 18) نسبة الذهب الخالص مختلطاً بمعادن أخرى لزيادة
-          صلابته. كلما زاد القيراط زاد النقاء والقيمة.
-        </p>
-      </div>
-      <div class="card">
-        <h3>24 قيراط</h3>
-        <p>
-          ذهب 24 قيراط: ذهب نقي (صافي 100% تقريباً)، ناعم جداً، يستخدم في
-          السبائك والاستثمار.
-        </p>
-      </div>
-      <div class="card">
-        <h3>21 قيراط</h3>
-        <p>
-          ذهب 21 قيراط: يحتوي على 21 جزءاً ذهب + 3 أجزاء معادن أخرى (تقريباً
-          87.5% ذهب)، شائع في المجوهرات.
-        </p>
-      </div>
-      <div class="card">
-        <h3>18 قيراط</h3>
-        <p>
-          ذهب 18 قيراط: يحتوي على 18 جزءاً ذهب + 6 أجزاء معادن أخرى (75% ذهب)،
-          أكثر صلابة ويستخدم في المشغولات الدقيقة.
-        </p>
-      </div>
-      <div class="card">
-        <h3>نظرة عامة:</h3>
-        <p>
-          يعود أصل الكلمة إلى بذور الخروب التي استخدمت قديماً لوزن المعادن
-          الثمينة. القيراط هو مقياس نقاوة وليس وزناً (الوزن يقاس بالجرام)، لكنه
-          يحدد القيمة بشكل مباشر.
-        </p>
-      </div>
+    <div class="card">
+      <h2>حاسبة القطع</h2>
+      <input id="grams" type="number" placeholder="الوزن بالغرام" />
+      <input id="making" type="number" placeholder="المصنعية لكل غرام" />
+      <button onclick="calculate()">احسب السعر</button>
+      <div id="result"></div>
     </div>
 
-    <div id="predictPage" class="page">
-      <h1>📈 التنبؤ</h1>
-      <button onclick="showPage('homePage')">⬅ رجوع</button>
-      <div class="card">
-        <h3 id="prediction"></h3>
-        <p id="trend"></p>
-      </div>
-      <div class="card"><div id="future"></div></div>
+    <div class="card">
+      <h2>آخر 7 أيام</h2>
+      <canvas id="goldChart"></canvas>
     </div>
 
-    <script>
-      let gramMAD = 0,
-        chart,
-        calcClicks = 0,
-        lastAdTime = 0;
+    <div id="error" class="error"></div>
+  </div>
 
-      /* إعلان */
-      function openAd() {
-        window.open(
-          "https://www.profitablecpmratenetwork.com/q9dp48u2t?key=2c47af4ede0f1094983fdad781055d6f"
-        );
+  <div id="info" class="page">
+    <div class="card">
+      <h2>شرح القيراط</h2>
+      <p>
+        قيراط الذهب هو وحدة قياس عالمية لنقاء الذهب، حيث يمثل الذهب عيار 24
+        ذهباً خالصاً تقريباً بنسبة 99.9%.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>24 قيراط</h3>
+      <p>ذهب نقي تقريباً، يستخدم غالباً في السبائك والاستثمار.</p>
+    </div>
+
+    <div class="card">
+      <h3>21 قيراط</h3>
+      <p>يحتوي على 87.5% ذهب تقريباً، وهو شائع جداً في المجوهرات.</p>
+    </div>
+
+    <div class="card">
+      <h3>18 قيراط</h3>
+      <p>يحتوي على 75% ذهب، ويتميز بصلابة أكبر للمشغولات الدقيقة.</p>
+    </div>
+  </div>
+
+  <div id="predict" class="page">
+    <div class="card">
+      <h2>التنبؤ التقريبي</h2>
+      <p class="muted">هذا توقع تقريبي محلي وليس نصيحة استثمارية.</p>
+      <div id="prediction" class="price">---</div>
+      <p id="trend" class="muted"></p>
+    </div>
+
+    <div class="card">
+      <h3>الأيام القادمة</h3>
+      <div id="future"></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button id="navHome" class="active" onclick="showPage('home')">الرئيسية</button>
+    <button id="navInfo" onclick="showPage('info')">معلومات</button>
+    <button id="navPredict" onclick="showPage('predict')">التنبؤ</button>
+  </div>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      tg.setHeaderColor("#061f1a");
+      tg.setBackgroundColor("#061f1a");
+    }
+
+    let gramMAD = 0;
+    let chart;
+    let dailyData = JSON.parse(localStorage.getItem("gold7days") || "[]");
+
+    const ouncePrice = document.getElementById("ouncePrice");
+    const gramPrice = document.getElementById("gramPrice");
+    const g24 = document.getElementById("g24");
+    const g21 = document.getElementById("g21");
+    const g18 = document.getElementById("g18");
+    const errorBox = document.getElementById("error");
+
+    function formatMAD(value) {
+      return Number(value).toLocaleString("ar-MA", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + " درهم";
+    }
+
+    function showPage(page) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.getElementById(page).classList.add("active");
+
+      document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
+      if (page === "home") navHome.classList.add("active");
+      if (page === "info") navInfo.classList.add("active");
+      if (page === "predict") {
+        navPredict.classList.add("active");
+        predict();
       }
 
-      function showSmartAd() {
-        let now = Date.now();
-        if (now - lastAdTime < 30000) return;
-        lastAdTime = now;
-        openAd();
+      if (tg?.HapticFeedback) {
+        tg.HapticFeedback.selectionChanged();
       }
+    }
 
-      /* تنقل */
-      function showPage(p) {
-        document
-          .querySelectorAll(".page")
-          .forEach((x) => x.classList.remove("active"));
-        document.getElementById(p).classList.add("active");
-        if (p === "predictPage") predict();
-      }
+    async function getGold() {
+      try {
+        errorBox.textContent = "";
 
-      /* جلب السعر */
-      async function getGold() {
-        let g = await fetch("https://api.gold-api.com/price/XAU").then((r) =>
-          r.json()
-        );
-        let u = await fetch("https://open.er-api.com/v6/latest/USD").then((r) =>
-          r.json()
-        );
+        const goldRes = await fetch("https://api.gold-api.com/price/XAU");
+        const gold = await goldRes.json();
 
-        gramMAD = (g.price * u.rates.MAD) / 31.1;
+        const currencyRes = await fetch("https://open.er-api.com/v6/latest/USD");
+        const currency = await currencyRes.json();
 
-        ounce.innerText = "الأونصة: " + (gramMAD * 31.1).toFixed(2);
-        gram.innerText = "الغرام: " + gramMAD.toFixed(2);
+        const usdToMad = currency.rates.MAD;
+        gramMAD = (gold.price * usdToMad) / 31.1;
 
-        g24.innerText = gramMAD.toFixed(2);
-        g21.innerText = (gramMAD * 0.875).toFixed(2);
-        g18.innerText = (gramMAD * 0.75).toFixed(2);
+        ouncePrice.textContent = formatMAD(gramMAD * 31.1);
+        gramPrice.textContent = formatMAD(gramMAD);
+
+        g24.textContent = formatMAD(gramMAD);
+        g21.textContent = formatMAD(gramMAD * 0.875);
+        g18.textContent = formatMAD(gramMAD * 0.75);
 
         updateDaily(gramMAD);
+      } catch (err) {
+        errorBox.textContent = "تعذر جلب السعر الآن. حاول لاحقاً.";
+      }
+    }
+
+    function calculate() {
+      const grams = Number(document.getElementById("grams").value);
+      const making = Number(document.getElementById("making").value || 0);
+      const result = document.getElementById("result");
+
+      if (!grams || grams <= 0) {
+        result.innerHTML = '<p class="error">أدخل وزن صحيح</p>';
+        return;
       }
 
-      /* الحساب */
-      function calculate() {
-        let g = grams.value,
-          m = making.value || 0;
+      const price24 = grams * gramMAD + grams * making;
+      const price21 = grams * gramMAD * 0.875 + grams * making;
+      const price18 = grams * gramMAD * 0.75 + grams * making;
 
-        if (!g || g <= 0) {
-          result.innerHTML = "⚠️ أدخل رقم";
-          return;
-        }
+      result.innerHTML = `
+        <div class="row"><strong>24 قيراط</strong><span>${formatMAD(price24)}</span></div>
+        <div class="row"><strong>21 قيراط</strong><span>${formatMAD(price21)}</span></div>
+        <div class="row"><strong>18 قيراط</strong><span>${formatMAD(price18)}</span></div>
+      `;
 
-        calcClicks++;
-        if (calcClicks % 2 === 0) showSmartAd();
-
-        result.innerHTML =
-          "24: " +
-          (g * gramMAD + g * m).toFixed(2) +
-          "<br>" +
-          "21: " +
-          (g * gramMAD * 0.875 + g * m).toFixed(2) +
-          "<br>" +
-          "18: " +
-          (g * gramMAD * 0.75 + g * m).toFixed(2);
+      if (tg?.HapticFeedback) {
+        tg.HapticFeedback.notificationOccurred("success");
       }
+    }
 
-      /* 🔥 مبيان 7 أيام */
-      let dailyData = JSON.parse(localStorage.getItem("gold7days")) || [];
+    function updateDaily(price) {
+      const today = new Date().toISOString().split("T")[0];
 
-      function updateDaily(price) {
-        let today = new Date().toISOString().split("T")[0];
-
-        if (
-          dailyData.length > 0 &&
-          dailyData[dailyData.length - 1].date === today
-        ) {
-          drawChart();
-          return;
-        }
-
+      if (dailyData.length && dailyData[dailyData.length - 1].date === today) {
+        dailyData[dailyData.length - 1].price = price;
+      } else {
         dailyData.push({ date: today, price });
-        if (dailyData.length > 7) dailyData.shift();
-
-        localStorage.setItem("gold7days", JSON.stringify(dailyData));
-        drawChart();
       }
 
-      function initChart() {
-        chart = new Chart(goldChart, {
-          type: "line",
-          data: {
-            labels: [],
-            datasets: [
-              {
-                label: "سعر الذهب",
-                data: [],
-                borderColor: "#FFD700",
-                backgroundColor: "rgba(255,215,0,0.2)",
-              },
-            ],
+      if (dailyData.length > 7) dailyData.shift();
+
+      localStorage.setItem("gold7days", JSON.stringify(dailyData));
+      drawChart();
+    }
+
+    function initChart() {
+      const ctx = document.getElementById("goldChart");
+
+      chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [{
+            label: "سعر الغرام",
+            data: [],
+            borderColor: "#d4af37",
+            backgroundColor: "rgba(212,175,55,0.2)",
+            tension: 0.35,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: {
+                color: "#fff7dd"
+              }
+            }
           },
-        });
-      }
-
-      function drawChart() {
-        chart.data.labels = dailyData.map((x) => x.date);
-        chart.data.datasets[0].data = dailyData.map((x) => x.price);
-        chart.update();
-      }
-
-      /* التنبؤ */
-      function predict() {
-        let base = gramMAD;
-        trend.innerText = Math.random() > 0.5 ? "📈 صعود" : "📉 هبوط";
-        prediction.innerText = (
-          base *
-          (1 + (Math.random() - 0.5) * 0.02)
-        ).toFixed(2);
-
-        let html = "";
-        for (let i = 1; i <= 5; i++) {
-          base *= 1 + (Math.random() - 0.5) * 0.03;
-          html += `<p>يوم ${i}: ${base.toFixed(2)}</p>`;
+          scales: {
+            x: {
+              ticks: { color: "#a8b8b0" },
+              grid: { color: "rgba(255,255,255,0.08)" }
+            },
+            y: {
+              ticks: { color: "#a8b8b0" },
+              grid: { color: "rgba(255,255,255,0.08)" }
+            }
+          }
         }
-        future.innerHTML = html;
-      }
+      });
+    }
 
-      /* تشغيل */
-      initChart();
-      getGold();
-      setInterval(getGold, 60000);
-      setTimeout(() => showSmartAd(), 20000);
-    </script>
-  </body>
-</html>
+    function drawChart() {
+      if (!chart) return;
+
+      chart.data.labels = dailyData.map(item => item.date);
+      chart.data.datasets[0].data = dailyData.map(item => item.price.toFixed(2));
+      chart.update();
+    }
+
+    function predict() {
+      if (!gramMAD) return;
+
+      let base = gramMAD;
+      const isUp = Math.random() > 0.5;
+
+      document.getElementById("trend").textContent = isUp ? "اتجاه متوقع: صعود" : "اتجاه متوقع: هبوط
