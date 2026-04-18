@@ -8,6 +8,16 @@
     />
     <title>حاسبة الذهب المغربية</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+      atOptions = {
+        key: "55bd95cebaf5ba8a3103032ccd4c7da6",
+        format: "iframe",
+        height: 90,
+        width: 728,
+        params: {},
+      };
+    </script>
+    <script src="https://www.highperformanceformat.com/55bd95cebaf5ba8a3103032ccd4c7da6/invoke.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -56,17 +66,19 @@
         display: block;
         width: 100%;
         background: linear-gradient(90deg, #0d1a10, #1a2e1a, #0d1a10);
-        border-bottom: 1px solid rgba(212, 163, 26, 0.3);
+        border: 1px solid rgba(212, 163, 26, 0.3);
+        border-radius: var(--radius);
         cursor: pointer;
         text-decoration: none;
         overflow: hidden;
         position: relative;
+        margin-bottom: 14px;
       }
       .banner-ad-inner {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 8px 14px;
+        padding: 12px 14px;
         gap: 10px;
       }
       .banner-ad-text {
@@ -81,7 +93,7 @@
         margin-bottom: 2px;
       }
       .banner-ad-title {
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 800;
         color: var(--text);
         line-height: 1.3;
@@ -96,9 +108,9 @@
         background: var(--gold);
         color: #0d1a10;
         border-radius: 8px;
-        padding: 6px 12px;
+        padding: 7px 14px;
         font-family: "Tajawal", sans-serif;
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 800;
         white-space: nowrap;
       }
@@ -173,20 +185,18 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 52px;
+        height: 50px;
       }
       .header-title h1 {
         font-size: 17px;
         font-weight: 800;
         color: var(--gold);
       }
-
-      /* STATUS BAR */
       .status-bar {
         display: flex;
         align-items: center;
         gap: 6px;
-        padding: 6px 16px 0;
+        padding: 6px 16px;
         font-size: 11px;
         color: var(--text-muted);
       }
@@ -256,7 +266,7 @@
       /* MAIN */
       main {
         flex: 1;
-        padding: 16px;
+        padding: 14px;
         padding-bottom: 90px;
         overflow-y: auto;
       }
@@ -312,7 +322,7 @@
         margin-bottom: 14px;
       }
 
-      /* PRICE CARD */
+      /* PRICE */
       .price-row {
         display: flex;
         align-items: flex-start;
@@ -409,6 +419,7 @@
       .chart-wrap {
         width: 100%;
         overflow: hidden;
+        margin-top: 14px;
         margin-bottom: 4px;
       }
       .chart-svg {
@@ -458,6 +469,7 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
+        margin-bottom: 0;
       }
       .karat-grid {
         display: grid;
@@ -494,9 +506,8 @@
         cursor: pointer;
         margin-top: 4px;
       }
-      .calc-btn:disabled {
-        opacity: 0.5;
-        cursor: default;
+      .calc-btn:active {
+        opacity: 0.85;
       }
       .calc-result {
         background: var(--gold-dimmer);
@@ -505,6 +516,7 @@
         padding: 16px;
         text-align: center;
         margin-top: 12px;
+        display: none;
       }
       .calc-result-value {
         font-size: 34px;
@@ -548,6 +560,7 @@
         margin-bottom: 10px;
         font-size: 13px;
         color: var(--red);
+        display: none;
       }
 
       /* KARAT TABLE */
@@ -573,6 +586,27 @@
         font-size: 11px;
         color: var(--text-muted);
         font-weight: 500;
+      }
+
+      /* SKELETON */
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          var(--bg3) 25%,
+          var(--border) 50%,
+          var(--bg3) 75%
+        );
+        border-radius: 10px;
+        animation: shimmer 1.5s infinite;
+        background-size: 200% 100%;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
       }
 
       /* PREDICT */
@@ -638,15 +672,18 @@
         border-radius: var(--radius);
         padding: 18px;
         margin-bottom: 14px;
+        background: var(--bg2);
         display: flex;
         align-items: center;
         justify-content: space-between;
       }
       .trend-card.up {
         border-color: rgba(34, 197, 94, 0.5);
+        background: rgba(34, 197, 94, 0.04);
       }
       .trend-card.down {
         border-color: rgba(239, 68, 68, 0.5);
+        background: rgba(239, 68, 68, 0.04);
       }
       .trend-indicator {
         width: 52px;
@@ -664,6 +701,8 @@
         background: rgba(239, 68, 68, 0.2);
         color: var(--red);
       }
+
+      /* TIMELINE */
       .timeline {
         position: relative;
         padding-right: 24px;
@@ -702,29 +741,20 @@
         font-size: 13px;
         font-weight: 700;
       }
+      .timeline-diff {
+        font-size: 11px;
+        font-weight: 600;
+      }
       .timeline-diff.up {
         color: var(--green);
       }
       .timeline-diff.down {
         color: var(--red);
       }
-      .timeline-diff {
-        font-size: 11px;
-        font-weight: 600;
-      }
       .timeline-price {
         font-size: 14px;
         font-weight: 800;
         font-variant-numeric: tabular-nums;
-      }
-      .current-price-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 12px;
-        border-radius: 10px;
-        background: var(--bg3);
-        margin-bottom: 4px;
       }
 
       /* INFO */
@@ -812,15 +842,14 @@
       }
       .tip-text {
         font-size: 13px;
+        color: var(--text-muted);
         line-height: 1.6;
-        color: var(--text);
       }
       .formula-box {
         background: var(--bg3);
-        border-radius: 10px;
-        padding: 14px;
-        text-align: center;
-        margin: 10px 0;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 10px;
       }
       .formula-text {
         font-size: 13px;
@@ -829,178 +858,114 @@
         line-height: 1.8;
       }
       .note-box {
-        background: var(--bg3);
-        border-radius: 10px;
-        padding: 12px;
+        background: var(--gold-dimmer);
+        border-radius: 8px;
+        padding: 10px 12px;
         font-size: 12px;
         color: var(--text-muted);
-        text-align: center;
-        line-height: 1.7;
-        margin-top: 14px;
-      }
-
-      /* SKELETON */
-      .skeleton {
-        background: linear-gradient(
-          90deg,
-          var(--bg3) 25%,
-          var(--border) 50%,
-          var(--bg3) 75%
-        );
-        background-size: 200% 100%;
-        animation: shimmer 1.4s infinite;
-        border-radius: 10px;
-      }
-      @keyframes shimmer {
-        0% {
-          background-position: 200% 0;
-        }
-        100% {
-          background-position: -200% 0;
-        }
+        line-height: 1.6;
       }
     </style>
   </head>
   <body>
     <div class="app">
-      <!-- BANNER AD (top of page) -->
-      <a class="banner-ad" id="bannerAd" onclick="openBanner(event)">
-        <div class="banner-ad-shine"></div>
-        <div class="banner-ad-inner">
-          <div
-            style="
-              display: flex;
-              align-items: center;
-              gap: 10px;
-              flex-shrink: 0;
-            "
-          >
-            <div
-              style="
-                width: 36px;
-                height: 36px;
-                border-radius: 8px;
-                background: var(--gold-dim);
-                border: 1px solid rgba(212, 163, 26, 0.3);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-              "
-            >
+      <!-- HEADER -->
+      <div class="header">
+        <div class="ad-bar">
+          <div>
+            <div class="ad-bar-label" id="pointsLabel">⭐ 0 نقطة</div>
+            <div class="ad-bar-sub" id="adBarSub">شاهد إعلاناً واكسب نقطة</div>
+          </div>
+          <button class="ad-btn" id="headerAdBtn" onclick="watchAd('header')">
+            + نقطة
+          </button>
+        </div>
+        <div class="header-title"><h1>🪙 حاسبة الذهب المغربية</h1></div>
+        <div class="status-bar">
+          <div class="status-dot" id="statusDot"></div>
+          <span id="statusText">جاري تحميل الأسعار...</span>
+        </div>
+      </div>
+
+      <!-- MAIN -->
+      <main>
+        <!-- PAGE: HOME -->
+        <div class="page active fade-in" id="page-home">
+          <!-- Price Card -->
+          <div class="card gold-card">
+            <div class="card-title">
               <svg
-                width="18"
-                height="18"
+                width="19"
+                height="19"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="var(--gold)"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg>
+              سعر الذهب الآن
+            </div>
+            <div class="price-row">
+              <div>
+                <div class="price-label">سعر الغرام — عيار 24</div>
+                <div class="price-main" id="gramPrice24">
+                  —<span class="price-unit"> د.م</span>
+                </div>
+                <div class="price-change" id="priceChange"></div>
+              </div>
+              <div class="price-badge" id="priceBadge">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="18 15 12 9 6 15" />
+                </svg>
+              </div>
+            </div>
+            <div class="price-stats">
+              <div class="stat-box">
+                <div class="stat-label">سعر الأونصة</div>
+                <div class="stat-value" id="ozPrice">
+                  —<span class="stat-unit"> $</span>
+                </div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label">سعر الصرف</div>
+                <div class="stat-value" id="fxRate">
+                  —<span class="stat-unit"> MAD/$</span>
+                </div>
+              </div>
+            </div>
+            <div id="chartWrap"></div>
+            <div class="updated" id="updatedTime">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
               >
                 <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <circle
-                  cx="12"
-                  cy="16"
-                  r="1"
-                  fill="var(--gold)"
-                  stroke="none"
-                />
+                <polyline points="12 6 12 12 16 14" />
               </svg>
-            </div>
-          </div>
-          <div class="banner-ad-text">
-            <div class="banner-ad-tag">إعلان مدفوع</div>
-            <div class="banner-ad-title">اكتشف أفضل عروض الذهب والاستثمار</div>
-            <div class="banner-ad-sub">انقر للمعرفة أكثر</div>
-          </div>
-          <div class="banner-ad-cta">اكتشف</div>
-        </div>
-      </a>
-
-      <!-- HEADER -->
-      <div class="header">
-        <div class="ad-bar">
-          <div>
-            <div class="ad-bar-label">إعلان ثابت</div>
-            <div class="ad-bar-sub" id="headerPoints">نقاطك: 0</div>
-          </div>
-          <button class="ad-btn" id="headerAdBtn" onclick="watchAd('header')">
-            شاهد إعلان واربح نقطة
-          </button>
-        </div>
-        <div class="header-title"><h1>حاسبة الذهب المغربية</h1></div>
-      </div>
-
-      <main>
-        <!-- PAGE: HOME -->
-        <div class="page active fade-in" id="page-home">
-          <div class="section-title">السعر الحالي</div>
-          <div class="section-sub">
-            أسعار الذهب المباشرة بالدرهم المغربي والدولار
-          </div>
-
-          <!-- Status -->
-          <div class="status-bar" id="statusBar">
-            <div class="status-dot" id="statusDot"></div>
-            <span id="statusText">جاري تحميل الأسعار...</span>
-          </div>
-
-          <!-- Price Card -->
-          <div
-            class="card gold-card"
-            style="padding: 18px; margin-top: 10px"
-            id="priceCard"
-          >
-            <div class="skeleton" style="height: 130px"></div>
-          </div>
-
-          <!-- Chart -->
-          <div class="card" id="chartCard" style="display: none">
-            <div class="card-title">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="var(--gold)"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-              </svg>
-              تطور السعر - آخر 5 أيام
-            </div>
-            <div
-              id="chartWrap"
-              style="height: 130px; width: 100%; overflow: hidden"
-            ></div>
-            <div class="chart-x-labels" id="chartXLabels"></div>
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 6px;
-                margin-top: 8px;
-              "
-            >
-              <div
-                style="
-                  width: 8px;
-                  height: 8px;
-                  border-radius: 50%;
-                  background: var(--gold);
-                "
-              ></div>
-              <span style="font-size: 11px; color: var(--text-muted)"
-                >سعر الغرام عيار 24 (درهم) — بيانات حقيقية من السوق</span
-              >
+              جاري التحميل...
             </div>
           </div>
 
-          <!-- Calculator -->
+          <!-- Calculator Card -->
           <div class="card">
             <div class="card-title">
               <svg
@@ -1019,7 +984,7 @@
               </svg>
               حاسبة الذهب
             </div>
-            <div class="input-row" style="margin-bottom: 0">
+            <div class="input-row">
               <div>
                 <div class="field-label">الوزن (بالغرام)</div>
                 <input
@@ -1045,7 +1010,7 @@
             </div>
             <div class="field-label">العيار</div>
             <div class="karat-grid" id="karatGrid"></div>
-            <div id="calcError" style="display: none" class="error-box">
+            <div class="error-box" id="calcError">
               <svg
                 width="16"
                 height="16"
@@ -1071,7 +1036,7 @@
             <button class="calc-btn" id="calcBtn" onclick="calculate()">
               احسب الآن
             </button>
-            <div class="calc-result" id="calcResult" style="display: none">
+            <div class="calc-result" id="calcResult">
               <div
                 style="
                   font-size: 12px;
@@ -1081,7 +1046,7 @@
               >
                 القيمة الإجمالية
               </div>
-              <div class="calc-result-value" id="calcResultTotal">—</div>
+              <div class="calc-result-value" id="calcTotal">—</div>
               <div class="calc-result-unit">درهم مغربي</div>
               <div class="calc-result-breakdown" id="calcBreakdown"></div>
             </div>
@@ -1109,6 +1074,31 @@
               <div class="skeleton" style="height: 200px"></div>
             </div>
           </div>
+
+          <!-- Banner Ad -->
+          <!--<a class="banner-ad" href="#" onclick="openBanner(event)"> -->
+            <div style="text-align:center; margin: 14px 0;">
+              <script>
+                atOptions = {
+                  'key' : 'bb0ecd8bf571763c65db389688b7736e',
+                  'format' : 'iframe',
+                  'height' : 60,
+                  'width' : 468,
+                  'params' : {}
+                };
+              </script>
+              <script src="https://www.highperformanceformat.com/bb0ecd8bf571763c65db389688b7736e/invoke.js"></script>
+            </div>
+            <div class="banner-ad-inner">
+              <div class="banner-ad-text">
+                <div class="banner-ad-tag">إعلان مميز</div>
+                <div class="banner-ad-title">عروض حصرية للذهب والمجوهرات</div>
+                <div class="banner-ad-sub">اكتشف أفضل الأسعار في المغرب</div>
+              </div>
+              <div class="banner-ad-cta">اكتشف</div>
+            </div>
+            <div class="banner-ad-shine"></div>
+          </a>
         </div>
         <!-- end page-home -->
 
@@ -1162,8 +1152,9 @@
               >
                 <polygon
                   points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-                /></svg
-              >جدول العيارات
+                />
+              </svg>
+              جدول العيارات
             </div>
             <div class="karat-detail">
               <div class="karat-detail-header">
@@ -1173,6 +1164,15 @@
               <div class="karat-detail-desc">
                 أنقى أنواع الذهب، يُستخدم في المسكوكات والسبائك.
               </div>
+              <div
+                id="info-k24"
+                style="
+                  font-size: 12px;
+                  color: var(--gold);
+                  font-weight: 700;
+                  margin-top: 4px;
+                "
+              ></div>
             </div>
             <div class="karat-detail">
               <div class="karat-detail-header">
@@ -1182,6 +1182,15 @@
               <div class="karat-detail-desc">
                 يُستخدم في المجوهرات الراقية والعملات الذهبية.
               </div>
+              <div
+                id="info-k22"
+                style="
+                  font-size: 12px;
+                  color: var(--gold);
+                  font-weight: 700;
+                  margin-top: 4px;
+                "
+              ></div>
             </div>
             <div class="karat-detail">
               <div class="karat-detail-header">
@@ -1191,6 +1200,15 @@
               <div class="karat-detail-desc">
                 شائع في المغرب والشرق الأوسط للمجوهرات.
               </div>
+              <div
+                id="info-k21"
+                style="
+                  font-size: 12px;
+                  color: var(--gold);
+                  font-weight: 700;
+                  margin-top: 4px;
+                "
+              ></div>
             </div>
             <div class="karat-detail">
               <div class="karat-detail-header">
@@ -1200,6 +1218,15 @@
               <div class="karat-detail-desc">
                 يوفر توازناً بين النقاء والمتانة، شائع في الخواتم.
               </div>
+              <div
+                id="info-k18"
+                style="
+                  font-size: 12px;
+                  color: var(--gold);
+                  font-weight: 700;
+                  margin-top: 4px;
+                "
+              ></div>
             </div>
             <div class="karat-detail">
               <div class="karat-detail-header">
@@ -1209,6 +1236,15 @@
               <div class="karat-detail-desc">
                 متين جداً، يُستخدم في المجوهرات اليومية.
               </div>
+              <div
+                id="info-k14"
+                style="
+                  font-size: 12px;
+                  color: var(--gold);
+                  font-weight: 700;
+                  margin-top: 4px;
+                "
+              ></div>
             </div>
             <div class="karat-detail">
               <div class="karat-detail-header">
@@ -1218,6 +1254,15 @@
               <div class="karat-detail-desc">
                 أقل نقاءً، يُستخدم في المجوهرات رخيصة الثمن.
               </div>
+              <div
+                id="info-k9"
+                style="
+                  font-size: 12px;
+                  color: var(--gold);
+                  font-weight: 700;
+                  margin-top: 4px;
+                "
+              ></div>
             </div>
           </div>
           <div class="card" style="margin-bottom: 14px">
@@ -1233,8 +1278,9 @@
                 stroke-linejoin="round"
               >
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg
-              >نصائح قبل الشراء
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+              </svg>
+              نصائح قبل الشراء
             </div>
             <div class="tip-row">
               <div class="tip-num">1</div>
@@ -1354,39 +1400,39 @@
     <!-- end .app -->
 
     <script>
-      // ════════════════════════════════════════════
-      // CONFIG — عدّل API_BASE إذا غيّرت السيرفر
-      // ════════════════════════════════════════════
-      const API_BASE =
-        "https://e28ac818-dd81-437d-9538-52e4843ffac6-00-plr7qeq1qdy0.picard.replit.dev:8080";
+      // ══════════════════════════════════════════════
+      // CONFIG
+      // ══════════════════════════════════════════════
+      const API_BASE = "/api"; // استبدل بـ URL السيرفر إذا احتجت
       const AD_URL =
         "https://www.profitablecpmratenetwork.com/q9dp48u2t?key=2c47af4ede0f1094983fdad781055d6f";
-      const COOLDOWN_MS = 30000;
+      const COOLDOWN_MS = 3 * 60 * 1000; // 3 دقائق للنقاط
       const POINTS_NEEDED = 10;
       const TROY_OZ = 31.1035;
 
       const KARATS = [
-        { label: "عيار 24", k: 24, mult: 1 },
-        { label: "عيار 22", k: 22, mult: 22 / 24 },
-        { label: "عيار 21", k: 21, mult: 21 / 24 },
-        { label: "عيار 18", k: 18, mult: 18 / 24 },
-        { label: "عيار 14", k: 14, mult: 14 / 24 },
-        { label: "عيار 9", k: 9, mult: 9 / 24 },
+        { label: "عيار 24", k: 24, mult: 1, purity: "99.9%" },
+        { label: "عيار 22", k: 22, mult: 22 / 24, purity: "91.6%" },
+        { label: "عيار 21", k: 21, mult: 21 / 24, purity: "87.5%" },
+        { label: "عيار 18", k: 18, mult: 18 / 24, purity: "75%" },
+        { label: "عيار 14", k: 14, mult: 14 / 24, purity: "58.3%" },
+        { label: "عيار 9", k: 9, mult: 9 / 24, purity: "37.5%" },
       ];
 
-      // ════════════════════════════════════════════
+      // ══════════════════════════════════════════════
       // STATE
-      // ════════════════════════════════════════════
-      let goldData = null; // live from API
-      let history = []; // [{label, price}] 5 days
+      // ══════════════════════════════════════════════
+      let goldData = null;
+      let history = [];
       let forecast = [];
       let trend = "up";
       let selectedK = KARATS[0];
       let apiOk = false;
+      let rewards = { points: 0, lastAdAt: 0 };
 
-      // ════════════════════════════════════════════
+      // ══════════════════════════════════════════════
       // TELEGRAM
-      // ════════════════════════════════════════════
+      // ══════════════════════════════════════════════
       const tg = window.Telegram?.WebApp;
       if (tg) {
         tg.ready?.();
@@ -1408,53 +1454,46 @@
         openAd();
       }
 
-      // ════════════════════════════════════════════
-      // REWARDS — متزامن مع السيرفر عبر Telegram ID
-      // ════════════════════════════════════════════
-
-      // cache محلي يُحدَّث من السيرفر
-      let rewards = { points: 0, lastAdAt: 0 };
-
+      // ══════════════════════════════════════════════
+      // USER ID
+      // ══════════════════════════════════════════════
       function getUserId() {
-        // Telegram user ID أو guest fallback
         const uid = tg?.initDataUnsafe?.user?.id;
-        return uid
-          ? String(uid)
-          : "guest_" + (localStorage.getItem("guestId") || createGuestId());
+        if (uid) return String(uid);
+        let gid = localStorage.getItem("guestId");
+        if (!gid) {
+          gid = "g" + Math.random().toString(36).slice(2, 10);
+          localStorage.setItem("guestId", gid);
+        }
+        return "guest_" + gid;
       }
 
-      function createGuestId() {
-        const id = "g" + Math.random().toString(36).slice(2, 10);
-        localStorage.setItem("guestId", id);
-        return id;
-      }
-
-      // جلب النقاط من السيرفر (يُستدعى عند التشغيل وبعد كل إعلان)
+      // ══════════════════════════════════════════════
+      // REWARDS — متزامن مع السيرفر
+      // ══════════════════════════════════════════════
       async function syncRewards() {
         try {
-          const res = await fetch(`${API_BASE}/api/rewards/${getUserId()}`, {
+          const res = await fetch(`${API_BASE}/rewards/${getUserId()}`, {
             signal: AbortSignal.timeout(5000),
           });
           if (!res.ok) throw new Error("fetch failed");
           const json = await res.json();
-          if (json.success) {
+          if (json.success)
             rewards = {
               points: json.data.points,
               lastAdAt: json.data.lastAdAt,
             };
-          }
         } catch {
-          // تعذّر الاتصال — استخدم localStorage احتياطياً
-          try {
-            const s = localStorage.getItem("rewardsFallback");
-            if (s) rewards = JSON.parse(s);
-          } catch {}
+          const s = localStorage.getItem("rewardsFallback");
+          if (s)
+            try {
+              rewards = JSON.parse(s);
+            } catch {}
         }
         updateHeader();
         renderPredict();
       }
 
-      // إرسال مشاهدة إعلان للسيرفر
       async function watchAd(src) {
         const elapsed = Date.now() - rewards.lastAdAt;
         if (elapsed < COOLDOWN_MS) {
@@ -1463,17 +1502,11 @@
             setRewardMsg(`انتظر ${sec} ثانية قبل إعلان آخر`);
           return;
         }
-
-        // افتح الإعلان أولاً
         openAd();
-
-        // تفاؤلية: حدّث الكاش المحلي فوراً
         rewards.lastAdAt = Date.now();
         updateHeader();
-
-        // أرسل للسيرفر
         try {
-          const res = await fetch(`${API_BASE}/api/rewards/${getUserId()}/ad`, {
+          const res = await fetch(`${API_BASE}/rewards/${getUserId()}/ad`, {
             method: "POST",
             signal: AbortSignal.timeout(8000),
           });
@@ -1483,52 +1516,107 @@
               points: json.data.points,
               lastAdAt: json.data.lastAdAt,
             };
-            // احتياطي في localStorage
             localStorage.setItem("rewardsFallback", JSON.stringify(rewards));
           } else if (json.error === "cooldown") {
-            // السيرفر رفض لأن المدة لم تنته
             if (src === "predict")
-              setRewardMsg(`انتظر ${json.remaining} ثانية قبل إعلان آخر`);
+              setRewardMsg(`انتظر ${json.remaining} ثانية`);
             return;
           }
         } catch {
-          // إذا فشل السيرفر، حدّث محلياً مؤقتاً
           rewards.points += 1;
           localStorage.setItem("rewardsFallback", JSON.stringify(rewards));
         }
-
         updateHeader();
         if (src === "predict") {
-          setRewardMsg("تمت إضافة نقطة ✓");
+          setRewardMsg("✓ تمت إضافة نقطة");
           renderPredict();
         }
         if (src === "header") renderPredict();
       }
 
-      // ════════════════════════════════════════════
-      // LIVE DATA FETCH
-      // ════════════════════════════════════════════
+      function updateHeader() {
+        document.getElementById(
+          "pointsLabel"
+        ).textContent = `⭐ ${rewards.points} نقطة`;
+        const elapsed = Date.now() - rewards.lastAdAt;
+        const ready = elapsed >= COOLDOWN_MS;
+        const btn = document.getElementById("headerAdBtn");
+        const sub = document.getElementById("adBarSub");
+        btn.disabled = !ready;
+        if (ready) {
+          sub.textContent = "شاهد إعلاناً واكسب نقطة";
+          btn.textContent = "+ نقطة";
+        } else {
+          const sec = Math.ceil((COOLDOWN_MS - elapsed) / 1000);
+          sub.textContent = `انتظر ${sec} ثانية`;
+          btn.textContent = "⏳";
+        }
+      }
+
+      // تحديث العداد كل ثانية للهيدر
+      setInterval(updateHeader, 1000);
+
+      // ══════════════════════════════════════════════
+      // LIVE DATA
+      // ══════════════════════════════════════════════
       function setStatus(state, msg) {
         const dot = document.getElementById("statusDot");
         const txt = document.getElementById("statusText");
         dot.className =
-          "status-dot " +
-          (state === "live" ? "live" : state === "err" ? "err" : "");
+          "status-dot" +
+          (state === "live" ? " live" : state === "err" ? " err" : "");
         txt.textContent = msg;
       }
 
       async function fetchLiveData() {
         setStatus("loading", "جاري تحميل الأسعار الحقيقية...");
-        try {
-          const res = await fetch(`${API_BASE}/api/gold-price`, {
-            signal: AbortSignal.timeout(12000),
-          });
-          if (!res.ok) throw new Error("HTTP " + res.status);
-          const json = await res.json();
-          if (!json.success) throw new Error(json.error || "API error");
 
-          goldData = json.data; // {ozUSD, gramUSD24, gramMAD24, madPerUsd, change24h, changePercent, updatedAt}
-          history = json.history; // [{label, price}]
+        try {
+          const res = await fetch("https://www.goldapi.io/api/XAU/USD", {
+            method: "GET",
+            headers: {
+              "x-access-token": "goldapi-dqqbysmnw0dj69-io",
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (!res.ok) throw new Error("HTTP " + res.status);
+
+          const data = await res.json();
+
+          const madPerUsd = 9.25; // نفس القيمة القديمة (بدون تغيير)
+          const gramUSD24 = data.price / 31.1035;
+          const gramMAD24 = gramUSD24 * madPerUsd;
+
+          goldData = {
+            ozUSD: data.price,
+            gramUSD24: +gramUSD24.toFixed(2),
+            gramMAD24: +gramMAD24.toFixed(0),
+            madPerUsd: madPerUsd,
+            change24h: data.ch,
+            changePercent: data.chp,
+            updatedAt: new Date().toISOString(),
+          };
+
+          // history (بدون تغيير — نفس المنطق القديم)
+          history = [];
+          let base = gramMAD24;
+          const now = new Date();
+          const dN = ["الأح", "الإث", "الثل", "الأر", "الخم", "الجم", "السب"];
+
+          for (let i = 4; i >= 0; i--) {
+            base += (Math.random() - 0.48) * 20;
+            base = Math.max(1350, base);
+
+            const d = new Date(now);
+            d.setDate(d.getDate() - i);
+
+            history.push({
+              label: i === 0 ? "اليوم" : dN[d.getDay()],
+              price: +base.toFixed(2),
+            });
+          }
+
           apiOk = true;
 
           buildForecast();
@@ -1536,420 +1624,342 @@
           renderChart();
           renderKaratTable();
           renderPredict();
+          renderInfoPrices();
 
-          const t = new Date(goldData.updatedAt).toLocaleTimeString("ar-MA");
-          setStatus("live", `مباشر · يحدث كل 5 دقائق · آخر تحديث ${t}`);
+          const t = new Date().toLocaleTimeString("ar-MA");
+          setStatus("live", `مباشر · GoldAPI · آخر تحديث ${t}`);
         } catch (e) {
-          console.error(e);
           apiOk = false;
-          // Fallback to base estimate
-          const gramMAD24 = 1430;
-          goldData = {
-            ozUSD: Math.round((gramMAD24 * TROY_OZ) / 9.25),
-            gramUSD24: +(gramMAD24 / 9.25).toFixed(2),
-            gramMAD24,
-            madPerUsd: 9.25,
-            change24h: 0,
-            changePercent: 0,
-            updatedAt: new Date().toISOString(),
-          };
-          // generate fallback history
-          let base = gramMAD24;
-          history = [];
-          const now = new Date();
-          for (let i = 4; i >= 0; i--) {
-            base += (Math.random() - 0.48) * 20;
-            base = Math.max(1350, base);
-            const d = new Date(now);
-            d.setDate(d.getDate() - i);
-            history.push({
-              label:
-                i === 0
-                  ? "اليوم"
-                  : d.toLocaleDateString("ar-MA", { weekday: "short" }),
-              price: +base.toFixed(2),
-            });
-          }
-          buildForecast();
-          renderPriceCard();
-          renderChart();
-          renderKaratTable();
-          renderPredict();
-          setStatus("err", "تعذر الاتصال — يُعرض آخر تقدير متاح");
+          setStatus("err", "تعذّر الاتصال بـ GoldAPI");
         }
       }
 
+      // تحديث تلقائي كل 5 دقائق
+      setInterval(fetchLiveData, 5 * 60 * 1000);
+
+      // ══════════════════════════════════════════════
+      // BUILD FORECAST
+      // ══════════════════════════════════════════════
       function buildForecast() {
-        if (!goldData) return;
-        trend = Math.random() > 0.5 ? "up" : "down";
-        let base = goldData.gramMAD24;
-        forecast = [];
-        for (let i = 1; i <= 5; i++) {
-          base *= 1 + (Math.random() - 0.5) * 0.03;
-          forecast.push({ day: i, price: +base.toFixed(2) });
-        }
-      }
-
-      // ════════════════════════════════════════════
-      // RENDER: PRICE CARD
-      // ════════════════════════════════════════════
-      const UP_SVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`;
-      const DN_SVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>`;
-      const UPB_SVG = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`;
-      const DNB_SVG = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>`;
-
-      function renderPriceCard() {
-        if (!goldData) return;
-        const d = goldData,
-          isUp = d.change24h >= 0;
-        document.getElementById("priceCard").innerHTML = `
-    <div class="price-row">
-      <div>
-        <div class="price-label">الغرام عيار 24</div>
-        <div class="price-main">${d.gramMAD24.toFixed(
-          2
-        )}<span class="price-unit">درهم</span></div>
-        <div class="price-change ${isUp ? "up" : "down"}">
-          ${isUp ? UP_SVG : DN_SVG}
-          <span>${isUp ? "+" : ""}${d.change24h.toFixed(2)} درهم (${
-          isUp ? "+" : ""
-        }${d.changePercent.toFixed(2)}%)</span>
-          <span style="color:var(--text-muted);font-weight:400">24س</span>
-        </div>
-      </div>
-      <div class="price-badge ${isUp ? "up" : "down"}">${
-          isUp ? UPB_SVG : DNB_SVG
-        }</div>
-    </div>
-    <div class="price-stats">
-      <div class="stat-box">
-        <div class="stat-label">سعر الأونصة الترويا</div>
-        <div class="stat-value">${d.ozUSD.toLocaleString()}<span class="stat-unit"> USD</span></div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">الغرام بالدولار</div>
-        <div class="stat-value">${d.gramUSD24.toFixed(
-          2
-        )}<span class="stat-unit"> USD</span></div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">سعر الصرف</div>
-        <div class="stat-value">${d.madPerUsd.toFixed(
-          2
-        )}<span class="stat-unit"> MAD/USD</span></div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">المصدر</div>
-        <div class="stat-value" style="font-size:12px">${
-          apiOk ? "Yahoo Finance" : "تقدير محلي"
-        }</div>
-      </div>
-    </div>
-  `;
-      }
-
-      // ════════════════════════════════════════════
-      // RENDER: CHART (SVG line)
-      // ════════════════════════════════════════════
-      function renderChart() {
-        if (!history.length) return;
-        const wrap = document.getElementById("chartWrap");
-        const W = wrap.clientWidth || 340,
-          H = 130;
-        const PAD = { t: 16, r: 6, b: 8, l: 6 };
         const prices = history.map((h) => h.price);
-        const mn = Math.min(...prices) - 15,
-          mx = Math.max(...prices) + 15,
-          rng = mx - mn || 1;
-        const pts = prices.map((p, i) => {
-          const x = PAD.l + (i / (prices.length - 1)) * (W - PAD.l - PAD.r);
-          const y = PAD.t + ((mx - p) / rng) * (H - PAD.t - PAD.b);
-          return [+x.toFixed(1), +y.toFixed(1)];
-        });
-        const poly = pts.map((p) => p.join(",")).join(" ");
-        const area = [
-          `${pts[0][0]},${H - PAD.b}`,
-          ...pts.map((p) => p.join(",")),
-          ...[`${pts[pts.length - 1][0]},${H - PAD.b}`],
-        ].join(" ");
-        let grid = "";
-        for (let i = 0; i < 3; i++) {
-          const yg = PAD.t + i * ((H - PAD.t - PAD.b) / 2);
-          grid += `<line x1="${PAD.l}" y1="${yg.toFixed(1)}" x2="${
-            W - PAD.r
-          }" y2="${yg.toFixed(1)}" stroke="#1e3025" stroke-width="1"/>`;
+        const current = goldData.gramMAD24;
+        let total = 0;
+        for (let i = 1; i < prices.length; i++)
+          total += prices[i] - prices[i - 1];
+        const avg = prices.length > 1 ? total / (prices.length - 1) : 5;
+        trend = avg >= 0 ? "up" : "down";
+        const dN = [
+          "الأحد",
+          "الاثنين",
+          "الثلاثاء",
+          "الأربعاء",
+          "الخميس",
+          "الجمعة",
+          "السبت",
+        ];
+        forecast = [];
+        let base = current;
+        for (let i = 1; i <= 3; i++) {
+          const noise = (Math.random() - 0.45) * 15;
+          const delta = avg * 0.7 + noise;
+          base = Math.max(1200, base + delta);
+          const d = new Date();
+          d.setDate(d.getDate() + i);
+          forecast.push({
+            label: dN[d.getDay()],
+            price: +base.toFixed(0),
+            diffPct: +((delta / current) * 100).toFixed(2),
+            up: delta >= 0,
+          });
         }
-        const dots = pts
-          .map((p, i) => {
-            const last = i === pts.length - 1;
-            const clr = last ? "#d4a31a" : "#7a9080";
-            const lbl = last
-              ? `<text x="${p[0]}" y="${(p[1] - 9).toFixed(
-                  1
-                )}" text-anchor="middle" font-size="10" fill="#d4a31a" font-family="Tajawal,sans-serif" font-weight="700">${prices[
-                  i
-                ].toFixed(0)}</text>`
-              : "";
-            const prev = i > 0 ? prices[i - 1] : prices[i];
-            const dot_clr = prices[i] >= prev ? "#22c55e" : "#ef4444";
-            if (last)
-              return `<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="${clr}"/>${lbl}`;
-            return `<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${dot_clr}"/>${lbl}`;
-          })
-          .join("");
-        wrap.innerHTML = `
-    <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-      <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#d4a31a" stop-opacity="0.28"/>
-        <stop offset="100%" stop-color="#d4a31a" stop-opacity="0.02"/>
-      </linearGradient></defs>
-      ${grid}
-      <polygon points="${area}" fill="url(#ag)"/>
-      <polyline points="${poly}" fill="none" stroke="#d4a31a" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
-      ${dots}
-    </svg>`;
-        document.getElementById("chartXLabels").innerHTML = history
-          .map((h) => `<span class="chart-x-label">${h.label}</span>`)
-          .join("");
-        document.getElementById("chartCard").style.display = "block";
       }
 
-      // ════════════════════════════════════════════
-      // KARAT TABLE
-      // ════════════════════════════════════════════
+      // ══════════════════════════════════════════════
+      // RENDER FUNCTIONS
+      // ══════════════════════════════════════════════
+      function renderPriceCard() {
+        const isUp = goldData.changePercent >= 0;
+        const gp = document.getElementById("gramPrice24");
+        gp.innerHTML =
+          goldData.gramMAD24.toLocaleString("ar-MA", {
+            maximumFractionDigits: 0,
+          }) + '<span class="price-unit"> د.م</span>';
+        const pc = document.getElementById("priceChange");
+        pc.className = "price-change " + (isUp ? "up" : "down");
+        pc.innerHTML = `${isUp ? "▲" : "▼"} ${Math.abs(
+          goldData.changePercent
+        ).toFixed(2)}% <span style="opacity:.7;font-weight:500">(${
+          isUp ? "+" : ""
+        }${goldData.change24h.toFixed(0)} $)</span>`;
+        const pb = document.getElementById("priceBadge");
+        pb.className = "price-badge " + (isUp ? "up" : "down");
+        pb.innerHTML = isUp
+          ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>'
+          : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+        document.getElementById("ozPrice").innerHTML =
+          goldData.ozUSD.toLocaleString() + '<span class="stat-unit"> $</span>';
+        document.getElementById("fxRate").innerHTML =
+          goldData.madPerUsd.toFixed(2) +
+          '<span class="stat-unit"> MAD/$</span>';
+        document.getElementById(
+          "updatedTime"
+        ).innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> آخر تحديث: ${new Date(
+          goldData.updatedAt
+        ).toLocaleTimeString("ar-MA")}`;
+      }
+
+      function renderChart() {
+        if (history.length < 2) return;
+        const prices = history.map((h) => h.price);
+        const min = Math.min(...prices),
+          max = Math.max(...prices),
+          range = max - min || 1;
+        const W = 300,
+          H = 70;
+        const pts = history.map((h, i) => {
+          const x = (i / (history.length - 1)) * W;
+          const y = H - ((h.price - min) / range) * (H - 10) - 5;
+          return [x, y];
+        });
+        const polyline = pts.map((p) => p.join(",")).join(" ");
+        const area = `M${pts[0].join(",")} ${pts
+          .map((p) => "L" + p.join(","))
+          .join(" ")} L${W},${H} L0,${H} Z`;
+        const isUp = prices[prices.length - 1] >= prices[0];
+        const color = isUp ? "#22c55e" : "#ef4444";
+        const labels = history
+          .map((h) => `<div class="chart-x-label">${h.label}</div>`)
+          .join("");
+        document.getElementById("chartWrap").innerHTML = `
+    <div class="chart-wrap">
+      <svg class="chart-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+        <defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="${color}" stop-opacity=".3"/>
+          <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+        </linearGradient></defs>
+        <path d="${area}" fill="url(#cg)"/>
+        <polyline points="${polyline}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="chart-x-labels">${labels}</div>`;
+      }
+
       function renderKaratTable() {
-        if (!goldData) return;
-        document.getElementById("karatTable").innerHTML = KARATS.map(
+        const rows = KARATS.map(
           (k) => `
     <div class="karat-row">
-      <span class="karat-row-name">${k.label}</span>
-      <span class="karat-row-price">${(goldData.gramMAD24 * k.mult).toFixed(
-        2
-      )} <span class="karat-row-unit">درهم/غ</span></span>
+      <div class="karat-row-name">${k.label}</div>
+      <div><span class="karat-row-price">${(
+        goldData.gramMAD24 * k.mult
+      ).toFixed(1)}</span><span class="karat-row-unit"> د.م/غ</span></div>
     </div>`
         ).join("");
+        document.getElementById("karatTable").innerHTML = rows;
       }
 
-      // ════════════════════════════════════════════
-      // KARAT GRID
-      // ════════════════════════════════════════════
-      function buildKaratGrid() {
-        document.getElementById("karatGrid").innerHTML = KARATS.map(
-          (k, i) =>
-            `<button class="karat-btn ${
-              i === 0 ? "selected" : ""
-            }" onclick="selK(${i})">${k.label}</button>`
-        ).join("");
-      }
-      function selK(i) {
-        haptic();
-        document
-          .querySelectorAll(".karat-btn")
-          .forEach((b, j) => b.classList.toggle("selected", i === j));
-        selectedK = KARATS[i];
-        const w = parseFloat(document.getElementById("weightInput").value);
-        if (!isNaN(w) && w > 0 && goldData) doCalc(w);
-      }
-
-      // ════════════════════════════════════════════
-      // CALCULATOR — مستقل تماماً عن الإعلانات
-      // ════════════════════════════════════════════
-      function calculate() {
-        haptic();
-        hideCalcErr();
-        if (!goldData) {
-          showCalcErr("يرجى الانتظار حتى تحمّل الأسعار");
-          return;
-        }
-        const w = parseFloat(document.getElementById("weightInput").value);
-        if (isNaN(w) || w <= 0) {
-          showCalcErr("أدخل وزناً صحيحاً أكبر من صفر");
-          return;
-        }
-        doCalc(w);
-      }
-      function doCalc(w) {
-        const making =
-          parseFloat(document.getElementById("makingInput").value) || 0;
-        const goldVal = goldData.gramMAD24 * selectedK.mult * w;
-        const makingCost = making * w;
-        const total = goldVal + makingCost;
-        document.getElementById("calcResultTotal").textContent =
-          total.toFixed(2);
-        document.getElementById("calcBreakdown").innerHTML = `
-    <div class="breakdown-item">
-      <div class="breakdown-label">قيمة الذهب</div>
-      <div class="breakdown-value">${goldVal.toFixed(2)} درهم</div>
-    </div>
-    <div class="breakdown-item">
-      <div class="breakdown-label">تكلفة المصنع</div>
-      <div class="breakdown-value">${makingCost.toFixed(2)} درهم</div>
-    </div>
-    <div class="breakdown-item" style="grid-column:1/-1;border-top:1px solid rgba(212,163,26,.2);padding-top:8px;margin-top:4px">
-      <div class="breakdown-label">سعر الغرام ${selectedK.label}</div>
-      <div class="breakdown-value">${(
-        goldData.gramMAD24 * selectedK.mult
-      ).toFixed(2)} درهم/غ</div>
-    </div>`;
-        document.getElementById("calcResult").style.display = "block";
-      }
-      function showCalcErr(m) {
-        document.getElementById("calcErrorMsg").textContent = m;
-        document.getElementById("calcError").style.display = "flex";
-      }
-      function hideCalcErr() {
-        document.getElementById("calcError").style.display = "none";
-      }
-
-      // ════════════════════════════════════════════
-      // HEADER
-      // ════════════════════════════════════════════
-      function updateHeader() {
-        document.getElementById(
-          "headerPoints"
-        ).textContent = `نقاطك: ${rewards.points}`;
-        const elapsed = Date.now() - rewards.lastAdAt;
-        const can = elapsed >= COOLDOWN_MS;
-        const btn = document.getElementById("headerAdBtn");
-        if (can) {
-          btn.textContent = "شاهد إعلان واربح نقطة";
-          btn.disabled = false;
-        } else {
-          btn.textContent = `انتظر ${Math.ceil(
-            (COOLDOWN_MS - elapsed) / 1000
-          )}ث`;
-          btn.disabled = true;
-        }
-      }
-
-      // ════════════════════════════════════════════
-      // PREDICT
-      // ════════════════════════════════════════════
-      function setRewardMsg(m) {
-        const e = document.getElementById("rewardMsg");
-        if (e) {
-          e.textContent = m;
-        }
+      function renderInfoPrices() {
+        [24, 22, 21, 18, 14, 9].forEach((k) => {
+          const el = document.getElementById(`info-k${k}`);
+          if (el && goldData)
+            el.textContent = `${(goldData.gramMAD24 * (k / 24)).toFixed(
+              1
+            )} د.م / غرام`;
+        });
       }
 
       function renderPredict() {
+        const el = document.getElementById("predictContent");
+        const pct = Math.min(100, (rewards.points / POINTS_NEEDED) * 100);
+        const remaining = Math.max(
+          0,
+          COOLDOWN_MS - (Date.now() - rewards.lastAdAt)
+        );
+        const ready = remaining === 0;
+        const sec = Math.ceil(remaining / 1000);
         const unlocked = rewards.points >= POINTS_NEEDED;
-        const c = document.getElementById("predictContent");
-        if (!unlocked) {
-          const needed = POINTS_NEEDED - rewards.points;
-          const pct = Math.min(100, (rewards.points / POINTS_NEEDED) * 100);
-          const elapsed = Date.now() - rewards.lastAdAt;
-          const can = elapsed >= COOLDOWN_MS;
-          const sec = Math.ceil((COOLDOWN_MS - elapsed) / 1000);
-          c.innerHTML = `
-      <div class="card gold-card" style="text-align:center;padding:24px 20px">
-        <div class="lock-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-        <div style="font-size:20px;font-weight:900;color:var(--gold);margin-bottom:8px">التنبؤ مغلق</div>
-        <div style="font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:16px">اجمع 10 نقاط لفتح صفحة التنبؤ. نقطة واحدة لكل إعلان مع انتظار 30 ثانية بين كل إعلان.</div>
-        <div style="background:var(--bg3);border-radius:12px;padding:14px;margin-bottom:16px">
-          <div class="points-display"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>${
-            rewards.points
-          } / ${POINTS_NEEDED}</div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:${pct}%"></div></div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:6px">تحتاج إلى ${needed} نقاط إضافية</div>
-        </div>
-        <button class="watch-btn" onclick="watchAdP()" ${
-          can ? "" : "disabled"
-        }>${can ? "شاهد إعلان واربح نقطة" : `انتظر ${sec} ثانية`}</button>
-        <div class="reward-msg" id="rewardMsg"></div>
-      </div>`;
-          return;
-        }
-        if (!goldData || !forecast.length) {
-          c.innerHTML = `<div class="skeleton" style="height:300px"></div>`;
-          return;
-        }
-        const isUp = trend === "up";
-        const BU = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`;
-        const BD = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>`;
-        const rows = forecast
-          .map((f, i) => {
-            const prev = i === 0 ? goldData.gramMAD24 : forecast[i - 1].price;
-            const d = f.price - prev;
-            const pos = d >= 0;
-            return `<div class="timeline-row"><div class="timeline-dot ${
-              pos ? "up" : "down"
-            }"></div><div><div class="timeline-day">يوم ${
-              f.day
-            }</div><div class="timeline-diff ${pos ? "up" : "down"}">${
-              pos ? "+" : ""
-            }${d.toFixed(
-              2
-            )} درهم</div></div><div class="timeline-price">${f.price.toFixed(
-              2
-            )}</div></div>`;
-          })
-          .join("");
-        c.innerHTML = `
-    <div class="trend-card ${isUp ? "up" : "down"}">
-      <div>
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">المؤشر العام</div>
-        <div style="font-size:22px;font-weight:900">${
-          isUp ? "صعود متوقع" : "هبوط محتمل"
-        }</div>
-      </div>
-      <div class="trend-indicator ${isUp ? "up" : "down"}">${
-          isUp ? BU : BD
-        }</div>
-    </div>
+
+        let html = `
     <div class="card">
-      <div style="font-size:15px;font-weight:800;margin-bottom:6px">توقعات الأيام الخمسة القادمة</div>
-      <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">بالدرهم المغربي — الغرام عيار 24</div>
-      <div class="current-price-row"><span style="font-weight:700">السعر الحالي</span><span style="font-weight:800">${goldData.gramMAD24.toFixed(
-        2
-      )} درهم</span></div>
-      <div class="timeline" style="margin-top:8px">${rows}</div>
-    </div>
-    <div class="note-box">التوقعات نموذج إحصائي ولا تعتبر نصيحة مالية.</div>`;
-      }
-      function watchAdP() {
-        haptic();
-        watchAd("predict");
+      <div class="card-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        نقاطك
+      </div>
+      <div class="points-display">⭐ <span>${
+        rewards.points
+      }</span> <span style="font-size:13px;font-weight:500;color:var(--text-muted)">/ ${POINTS_NEEDED}</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar" style="width:${pct}%"></div></div>
+      <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:10px">
+        ${
+          unlocked
+            ? "لقد فتحت ميزة التنبؤ!"
+            : `${POINTS_NEEDED - rewards.points} نقاط متبقية لفتح التنبؤ`
+        }
+      </div>
+      <button class="watch-btn" id="predictAdBtn" ${
+        ready ? "" : "disabled"
+      } onclick="watchAdPredict()">
+        ${ready ? "▶ شاهد إعلاناً واكسب نقطة" : `⏳ انتظر ${sec} ثانية`}
+      </button>
+      <div class="reward-msg" id="rewardMsg"></div>
+    </div>`;
+
+        if (unlocked && goldData) {
+          const isUp = trend === "up";
+          html += `
+      <div class="trend-card ${isUp ? "up" : "down"}">
+        <div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">التوقع للأيام القادمة</div>
+          <div style="font-size:22px;font-weight:900;color:${
+            isUp ? "var(--green)" : "var(--red)"
+          }">${isUp ? "صعود متوقع ▲" : "هبوط متوقع ▼"}</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:4px">
+            ${
+              isUp
+                ? "يُتوقع ارتفاع تدريجي بفضل الزخم الإيجابي في الأسواق العالمية"
+                : "يُتوقع انخفاض طفيف نتيجة ضغوط السوق"
+            }
+          </div>
+        </div>
+        <div class="trend-indicator ${isUp ? "up" : "down"}">
+          ${
+            isUp
+              ? '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>'
+              : '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'
+          }
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          توقع 3 أيام
+        </div>
+        <div class="timeline">
+          ${forecast
+            .map(
+              (d) => `
+            <div class="timeline-row">
+              <div class="timeline-dot ${d.up ? "up" : "down"}"></div>
+              <div><div class="timeline-day">${
+                d.label
+              }</div><div class="timeline-diff ${d.up ? "up" : "down"}">${
+                d.up ? "▲" : "▼"
+              } ${Math.abs(d.diffPct).toFixed(1)}%</div></div>
+              <div class="timeline-price">${d.price.toLocaleString(
+                "ar-MA"
+              )} د.م</div>
+            </div>`
+            )
+            .join("")}
+        </div>
+      </div>`;
+        } else if (!unlocked) {
+          html += `
+      <div class="card" style="text-align:center;padding:32px">
+        <div class="lock-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div style="font-weight:800;font-size:16px;margin-bottom:8px">ميزة مقفلة</div>
+        <div style="color:var(--text-muted);font-size:13px">اجمع ${POINTS_NEEDED} نقاط بمشاهدة الإعلانات لفتح توقعات الأسعار</div>
+      </div>`;
+        }
+
+        el.innerHTML = html;
       }
 
-      // ════════════════════════════════════════════
-      // NAVIGATION
-      // ════════════════════════════════════════════
-      function showPage(p) {
-        haptic();
-        ["home", "predict", "info"].forEach((x) => {
-          document
-            .getElementById("page-" + x)
-            .classList.toggle("active", x === p);
-          document
-            .getElementById("nav-" + x)
-            .classList.toggle("active", x === p);
-        });
-        if (p === "predict") renderPredict();
+      function setRewardMsg(msg) {
+        const el = document.getElementById("rewardMsg");
+        if (el) el.textContent = msg;
       }
 
-      // ════════════════════════════════════════════
-      // TICKER — كل ثانية: تحديث العداد التنازلي
-      // ════════════════════════════════════════════
+      // تحديث predict كل ثانية لتحديث العداد
       setInterval(() => {
-        updateHeader();
-        const pred = document.getElementById("page-predict");
-        if (pred.classList.contains("active") && rewards.points < POINTS_NEEDED)
-          renderPredict();
+        const page = document.getElementById("page-predict");
+        if (page && page.classList.contains("active")) renderPredict();
       }, 1000);
 
-      // مزامنة النقاط مع السيرفر كل دقيقتين
-      setInterval(syncRewards, 2 * 60 * 1000);
+      async function watchAdPredict() {
+        await watchAd("predict");
+      }
 
-      // تحديث أسعار الذهب كل 5 دقائق
-      setInterval(fetchLiveData, 5 * 60 * 1000);
+      // ══════════════════════════════════════════════
+      // CALCULATOR
+      // ══════════════════════════════════════════════
+      function buildKaratGrid() {
+        const grid = document.getElementById("karatGrid");
+        grid.innerHTML = KARATS.map(
+          (k) =>
+            `<button class="karat-btn${
+              k.k === selectedK.k ? " selected" : ""
+            }" onclick="selectKarat(${k.k})">${k.label}</button>`
+        ).join("");
+      }
 
-      // ════════════════════════════════════════════
+      function selectKarat(k) {
+        haptic();
+        selectedK = KARATS.find((x) => x.k === k);
+        buildKaratGrid();
+      }
+
+      function calculate() {
+        haptic();
+        document.getElementById("calcError").style.display = "none";
+        const w = parseFloat(document.getElementById("weightInput").value);
+        const m = parseFloat(document.getElementById("makingInput").value) || 0;
+        if (!w || w <= 0) {
+          document.getElementById("calcErrorMsg").textContent =
+            "يرجى إدخال وزن صحيح";
+          document.getElementById("calcError").style.display = "flex";
+          return;
+        }
+        if (!goldData) {
+          document.getElementById("calcErrorMsg").textContent =
+            "الأسعار غير متوفرة بعد";
+          document.getElementById("calcError").style.display = "flex";
+          return;
+        }
+        const gramPrice = goldData.gramMAD24 * selectedK.mult;
+        const goldVal = +(w * gramPrice).toFixed(2);
+        const makingVal = +(w * m).toFixed(2);
+        const total = +(goldVal + makingVal).toFixed(2);
+
+        document.getElementById("calcTotal").textContent =
+          total.toLocaleString("ar-MA");
+        document.getElementById("calcBreakdown").innerHTML = `
+    <div class="breakdown-item"><div class="breakdown-label">قيمة الذهب</div><div class="breakdown-value">${goldVal.toLocaleString()} د.م</div></div>
+    <div class="breakdown-item"><div class="breakdown-label">تكلفة المصنع</div><div class="breakdown-value">${makingVal.toLocaleString()} د.م</div></div>
+    <div class="breakdown-item"><div class="breakdown-label">سعر غرام ${
+      selectedK.label
+    }</div><div class="breakdown-value">${gramPrice.toFixed(1)} د.م</div></div>
+    <div class="breakdown-item"><div class="breakdown-label">نسبة النقاء</div><div class="breakdown-value">${
+      selectedK.purity
+    }</div></div>`;
+        document.getElementById("calcResult").style.display = "block";
+
+        // فتح الإعلان مرتين عند الحساب
+        openAd();
+        //setTimeout(openAd, 800);
+      }
+
+      // ══════════════════════════════════════════════
+      // NAVIGATION
+      // ══════════════════════════════════════════════
+      function showPage(name) {
+        haptic();
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById("page-" + name).classList.add("active");
+        document.getElementById("nav-" + name).classList.add("active");
+        if (name === "predict") renderPredict();
+      }
+
+      // ══════════════════════════════════════════════
       // INIT
-      // ════════════════════════════════════════════
+      // ══════════════════════════════════════════════
       buildKaratGrid();
-      syncRewards(); // جلب النقاط من السيرفر عند البداية
-      fetchLiveData(); // جلب أسعار الذهب
+      fetchLiveData();
+      syncRewards();
     </script>
   </body>
 </html>
