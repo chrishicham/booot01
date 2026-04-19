@@ -1589,75 +1589,93 @@
       }
 
       async function fetchLiveData() {
-        setStatus("loading", "جاري تحميل الأسعار الحقيقية...");
+  setStatus("loading", "جاري تحميل الأسعار الحقيقية...");
 
-        try {
-          const res = await fetch("https://www.goldapi.io/api/XAU/USD", {
-            method: "GET",
-            headers: {
-              "x-access-token": "goldapi-dqqbysmnw0dj69-io",
-              "Content-Type": "application/json",
-            },
-          });
+  try {
+    const apiUrl =
+      "https://api.gold-api.com/price/XAU?api_key=833017429f4fc5014de0b937de61b99ce0d2a94fc6aa9ab9cb66264bca53b85c";
 
-          if (!res.ok) throw new Error("HTTP " + res.status);
+    // PROXY
+    const res = await fetch(
+      "https://api.allorigins.win/raw?url=" + encodeURIComponent(apiUrl)
+    );
 
-          const data = await res.json();
+    if (!res.ok) throw new Error("HTTP " + res.status);
 
-          const madPerUsd = 9.25; // نفس القيمة القديمة (بدون تغيير)
-          const gramUSD24 = data.price / 31.1035;
-          const gramMAD24 = gramUSD24 * madPerUsd;
+    const data = await res.json();
 
-          goldData = {
-            ozUSD: data.price,
-            gramUSD24: +gramUSD24.toFixed(2),
-            gramMAD24: +gramMAD24.toFixed(0),
-            madPerUsd: madPerUsd,
-            change24h: data.ch,
-            changePercent: data.chp,
-            updatedAt: new Date().toISOString(),
-          };
+    console.log("DATA:", data);
 
-          // history (بدون تغيير — نفس المنطق القديم)
-          history = [];
-          let base = gramMAD24;
-          const now = new Date();
-          const dN = ["الأح", "الإث", "الثل", "الأر", "الخم", "الجم", "السب"];
+    if (!data.price) throw new Error("No price");
 
-          for (let i = 4; i >= 0; i--) {
-            base += (Math.random() - 0.48) * 20;
-            base = Math.max(1350, base);
+    const madPerUsd = 9.25;
+    const gramUSD24 = data.price / 31.1035;
+    const gramMAD24 = gramUSD24 * madPerUsd;
 
-            const d = new Date(now);
-            d.setDate(d.getDate() - i);
+    // حساب التغير الحقيقي
+    let prev = localStorage.getItem("lastPrice");
+    let change = 0;
+    let changePct = 0;
 
-            history.push({
-              label: i === 0 ? "اليوم" : dN[d.getDay()],
-              price: +base.toFixed(2),
-            });
-          }
+    if (prev) {
+      change = data.price - prev;
+      changePct = (change / prev) * 100;
+    }
 
-          apiOk = true;
+    localStorage.setItem("lastPrice", data.price);
 
-          buildForecast();
-          renderPriceCard();
-          renderChart();
-          renderKaratTable();
-          renderPredict();
-          renderInfoPrices();
+    goldData = {
+      ozUSD: data.price,
+      gramUSD24: +gramUSD24.toFixed(2),
+      gramMAD24: +gramMAD24.toFixed(0),
+      madPerUsd: madPerUsd,
+      change24h: change,
+      changePercent: changePct,
+      updatedAt: data.updatedAt || new Date().toISOString(),
+    };
 
-          const t = new Date().toLocaleTimeString("ar-MA");
-          setStatus("live", `مباشر · GoldAPI · آخر تحديث ${t}`);
-        } catch (e) {
-          apiOk = false;
-          setStatus("err", "تعذّر الاتصال بـ GoldAPI");
-        }
-      }
+    apiOk = true;
+
+    buildForecast();
+    renderPriceCard();
+    renderChart();
+    renderKaratTable();
+    renderPredict();
+    renderInfoPrices();
+
+    const t = new Date().toLocaleTimeString("ar-MA");
+    setStatus("live", `مباشر · Gold API · ${t}`);
+  } catch (e) {
+    console.error(e);
+    apiOk = false;
+
+    // fallback (قيم تقريبية باش التطبيق ما يبقاش خاوي)
+    const fakePrice = 4800 + Math.random() * 50;
+
+    const gramUSD24 = fakePrice / 31.1035;
+    const gramMAD24 = gramUSD24 * 9.25;
+
+    goldData = {
+      ozUSD: fakePrice,
+      gramUSD24: +gramUSD24.toFixed(2),
+      gramMAD24: +gramMAD24.toFixed(0),
+      madPerUsd: 9.25,
+      change24h: 0,
+      changePercent: 0,
+      updatedAt: new Date().toISOString(),
+    };
+
+    renderPriceCard();
+    renderKaratTable();
+
+    setStatus("err", "وضع احتياطي (API فيه مشكل)");
+  }
+}
 
       // تحديث تلقائي كل 5 دقائق
       setInterval(fetchLiveData, 5 * 60 * 1000);
 
-      // ══════════════════════════════════════════════
+      // ════════════════════════════════════════════
       // BUILD FORECAST
       // ══════════════════════════════════════════════
       function buildForecast() {
